@@ -1,6 +1,10 @@
 [org 0x100]
 jmp start
 
+roadStart: dw 46
+roadWidth: dw 30
+roadMid: dw 15
+
 sceneInitTest: db "Scene initialized"
 playerInitTest: db "Player initialized"
 sceneStrLength: dw 17
@@ -59,9 +63,10 @@ ret
 ;prints road for the first time (assumes initVidSeg called by parent function)
 initRoad:
 pusha
-        add di, 60      ;move di to column (half - 10 (40 - 10))
+        ;add di, [roadStart]      
+        add di, [roadStart]
         roadLoopOuter:
-                mov cx, 20      ;20 columns wide road
+                mov cx, [roadWidth]      
                 ;draw one column
                 initRoadColumn:
                         ; ||          |          ||
@@ -71,9 +76,9 @@ pusha
 
                         ;load correct character in ax
                         mov ax, 0x0720  ;space with normal attribute
-                        cmp cx, 20
+                        cmp cx, [roadWidth]
                         je setRoadSideChar
-                        cmp cx, 10
+                        cmp cx, [roadMid]
                         je setRoadMidChar
                         cmp cx, 1
                         je setRoadSideChar
