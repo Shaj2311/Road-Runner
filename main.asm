@@ -3,10 +3,10 @@ jmp start
 
 roadStart: dw 46
 roadWidth: dw 30
-roadMid: dw 15
 roadLane0: dw 0
 roadLane1: dw 0
 roadLane2: dw 0
+roadEnd: dw 0
 
 sceneInitTest: db "Scene initialized"
 playerInitTest: db "Player initialized"
@@ -48,6 +48,11 @@ pusha
         add [roadLane2], dx     ;add roadstart
         add [roadLane2], ax     ;add lane width
         add [roadLane2], ax     ;add lane width
+
+        ;end of road
+        add [roadEnd], dx       ;add roadstart
+        mov cx, [roadwidth]
+        add [roadEnd], cx       ;add roadwidth
 
 popa
 ret
@@ -112,13 +117,14 @@ pusha
                 ;draw one column
                 initRoadColumn:
                         ; ||          |          ||
-                        ;if(cx == 20) character = ||
+                        ;
+                        ;if(cx == roadStart) character = ||
                         ;if(cx == 10) character = |
                         ;if(cx == 0)  character = ||
 
                         ;load correct character in ax
                         mov ax, 0x0720  ;space with normal attribute
-                        cmp cx, [roadWidth]
+                        cmp dx, [roadStart]
                         je setRoadSideChar
                         cmp cx, [roadMid]
                         je setRoadMidChar
