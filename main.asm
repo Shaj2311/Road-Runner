@@ -88,7 +88,7 @@ ret
 
 
 
-;=========== FUNCTION: initScene() HELPERS: initRoad(), setRoadSideChar(), setRoadLaneChar() ==============
+;=========== FUNCTION: initScene() HELPERS: initRoad(), drawRoadColumn(), setRoadSideChar(), setRoadLaneChar() ==============
 ;draws background for the first time
 initScene:
 pusha
@@ -113,47 +113,54 @@ pusha
         ;add di, [roadStart]      
         add di, [roadStart]
         roadLoopOuter:
-                mov cx, [roadWidth]      
-                ;draw one column
-                initRoadColumn:
-                        ; ||          |          ||
-                        ;
-
-                        ;load correct character in ax
-                        mov ax, 0x0720  ;space with normal attribute
-
-                        cmp di, [roadStart]     ;start of road: ||
-                        je setRoadSideChar
-
-                        cmp di, [roadLane0]       ;lane: |
-                        je setRoadLaneChar
-
-                        cmp di, [roadLane1]       ;lane: |
-                        je setRoadLaneChar
-
-                        cmp di, [roadLane2]       ;lane: |
-                        je setRoadLaneChar
-
-                        cmp di, [roadEnd]       ;end of road: ||
-                        je setRoadSideChar
-
-                        initRoadColumnRet:
-
-                        ;draw character to screen
-                        mov [es:di], ax
-                        add di, 2
-                        ;loop back
-                loop initRoadColumn
+                call drawRoadColumn
 
                 ;loop back
 
-
-
-
-
-
 popa
 ret
+
+
+
+
+drawRoadColumn:
+pusha
+        mov cx, [roadWidth]      
+        ;draw one column
+        call initRoadColumn
+        initRoadColumn:
+
+                ; ||          |          ||
+                ;
+
+                ;load correct character in ax
+                mov ax, 0x0720  ;space with normal attribute
+
+                cmp di, [roadStart]     ;start of road: ||
+                je setRoadSideChar
+
+                cmp di, [roadLane0]       ;lane: |
+                je setRoadLaneChar
+
+                cmp di, [roadLane1]       ;lane: |
+                je setRoadLaneChar
+
+                cmp di, [roadLane2]       ;lane: |
+                je setRoadLaneChar
+
+                cmp di, [roadEnd]       ;end of road: ||
+                je setRoadSideChar
+
+                initRoadColumnRet:
+
+                ;draw character to screen
+                mov [es:di], ax
+                add di, 2
+                ;loop back
+        loop initRoadColumn
+popa
+ret
+
 
 
 setRoadSideChar:
@@ -164,7 +171,7 @@ setRoadLaneChar:
         mov ah, 0x07    ;normal attribute
         mov al, 0x7C     ;|
 jmp initRoadColumnRet
-;=========== FUNCTION END: initScene() HELPERS: initRoad(), setRoadSideChar(), setRoadLaneChar() ==============
+;=========== FUNCTION END: initScene() HELPERS: initRoad(), drawRoadColumn(), setRoadSideChar(), setRoadLaneChar() ==============
 
 
 
