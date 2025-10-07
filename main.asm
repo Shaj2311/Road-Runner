@@ -4,6 +4,9 @@ jmp start
 roadStart: dw 46
 roadWidth: dw 30
 roadMid: dw 15
+roadLane0: dw 0
+roadLane1: dw 0
+roadLane2: dw 0
 
 sceneInitTest: db "Scene initialized"
 playerInitTest: db "Player initialized"
@@ -11,6 +14,7 @@ sceneStrLength: dw 17
 playerStrLength: dw 18
 
 start:
+        call initRoadValues
         call clrscr
         call initScene
         call initPlayer
@@ -18,6 +22,43 @@ start:
 
 
 
+
+;======== FUNCTION initRoadValues() =========
+initRoadValues:
+pusha
+
+        ;divide roadwidth by 3, store lane width in ax
+        xor dx, dx
+        mov ax, [roadWidth]
+        mov bx, 3
+        div bx
+
+
+        ;store positions of each lane
+        mov dx, [roadStart]
+
+        ;lane 0 position
+        add [roadLane0], dx
+
+        ;lane 1 position
+        add [roadLane1], dx     ;add roadstart
+        add [roadLane1], ax     ;add lane width
+        
+        ;lane 2 position
+        add [roadLane2], dx     ;add roadstart
+        add [roadLane2], ax     ;add lane width
+        add [roadLane2], ax     ;add lane width
+
+popa
+ret
+;======== FUNCTION END: initRoadValues() =========
+
+
+
+
+
+
+;======== FUNCTION clrscr() =========
 ;clears the screen
 clrscr:
 pusha
@@ -32,6 +73,7 @@ pusha
 
 popa
 ret
+;======== FUNCTION END: clrscr() =========
 
 
 
