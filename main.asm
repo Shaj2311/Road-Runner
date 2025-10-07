@@ -110,12 +110,17 @@ ret
 ;prints road for the first time (assumes initVidSeg called by parent function)
 initRoad:
 pusha
-        ;add di, [roadStart]      
-        add di, [roadStart]
-        roadLoopOuter:
+        
+        ;loop counter
+        mov cx, 1
+        roadLoop:
+                push cx                 ;line number
                 call drawRoadColumn
 
                 ;loop back
+                inc cx
+                cmp cx, 25
+                jb roadLoop
 
 popa
 ret
@@ -124,13 +129,39 @@ ret
 
 
 drawRoadColumn:
-pusha
-        mov cx, [roadWidth]      
+push bp
+mov bp, sp
+push ax
+push cx
+push bx
+push es
+push di
+push si
+;TODO: FIX POPS
+        mov si, 0
+        ;store vertical offset in ax
+        mov bx, [bp + 4]        ;dx = line number
+        mov ax, 160
+        mul bx
+        
+
+        ;add vertical offset to di
+        add si, ax              
+
+        ;add horizontal offset to di
+        add si, [roadStart]
+
+        ;SI NOW POINTS TO CORRECT DRAWING LOCATION
+        ;DI POINTS TO FIRST LINE + HORIZONTAL OFFSET
+
+
+
+        mov cx, [roadWidth]     ;loop counter
+        mov di, [roadStart]     ;point di to start of road (first line)
         ;draw one column
-        call initRoadColumn
         initRoadColumn:
 
-                ; ||          |          ||
+                ; ||    |       |       ||
                 ;
 
                 ;load correct character in ax
@@ -154,12 +185,19 @@ pusha
                 initRoadColumnRet:
 
                 ;draw character to screen
-                mov [es:di], ax
+                mov [es:si], ax
                 add di, 2
+                add si, 2
                 ;loop back
         loop initRoadColumn
-popa
-ret
+pop si
+pop di
+pop es
+pop bx
+pop cx
+pop ax
+pop bp
+ret 2
 
 
 
