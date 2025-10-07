@@ -1,8 +1,8 @@
 [org 0x100]
 jmp start
 
-roadStart: dw 46
-roadWidth: dw 30
+roadStart: dw 40
+roadWidth: dw 80
 roadLane0: dw 0
 roadLane1: dw 0
 roadLane2: dw 0
@@ -51,7 +51,7 @@ pusha
 
         ;end of road
         add [roadEnd], dx       ;add roadstart
-        mov cx, [roadwidth]
+        mov cx, [roadWidth]
         add [roadEnd], cx       ;add roadwidth
 
 popa
@@ -88,7 +88,7 @@ ret
 
 
 
-;=========== FUNCTION: initScene() HELPERS: initRoad(), setRoadSideChar(), setRoadMidChar() ==============
+;=========== FUNCTION: initScene() HELPERS: initRoad(), setRoadSideChar(), setRoadLaneChar() ==============
 ;draws background for the first time
 initScene:
 pusha
@@ -118,18 +118,25 @@ pusha
                 initRoadColumn:
                         ; ||          |          ||
                         ;
-                        ;if(cx == roadStart) character = ||
-                        ;if(cx == 10) character = |
-                        ;if(cx == 0)  character = ||
 
                         ;load correct character in ax
                         mov ax, 0x0720  ;space with normal attribute
-                        cmp dx, [roadStart]
+
+                        cmp di, [roadStart]     ;start of road: ||
                         je setRoadSideChar
-                        cmp cx, [roadMid]
-                        je setRoadMidChar
-                        cmp cx, 1
+
+                        cmp di, [roadLane0]       ;lane: |
+                        je setRoadLaneChar
+
+                        cmp di, [roadLane1]       ;lane: |
+                        je setRoadLaneChar
+
+                        cmp di, [roadLane2]       ;lane: |
+                        je setRoadLaneChar
+
+                        cmp di, [roadEnd]       ;end of road: ||
                         je setRoadSideChar
+
                         initRoadColumnRet:
 
                         ;draw character to screen
@@ -153,11 +160,11 @@ setRoadSideChar:
         mov ah, 0x07    ;normal attribute
         mov al, 0xBA    ;||
 jmp initRoadColumnRet
-setRoadMidChar:
+setRoadLaneChar:
         mov ah, 0x07    ;normal attribute
         mov al, 0x7C     ;|
 jmp initRoadColumnRet
-;=========== FUNCTION END: initScene() HELPERS: initRoad(), setRoadSideChar(), setRoadMidChar() ==============
+;=========== FUNCTION END: initScene() HELPERS: initRoad(), setRoadSideChar(), setRoadLaneChar() ==============
 
 
 
