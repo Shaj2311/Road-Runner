@@ -1,8 +1,10 @@
 [org 0x100]
 jmp start
 
-roadStart: dw 40
-roadWidth: dw 80
+;THESE ARE POSITIONS AND SIZES, NOT OFFSETS
+;MULTIPLY BY 2
+roadStart: dw 20
+roadWidth: dw 40
 roadLane0: dw 0
 roadLane1: dw 0
 roadLane2: dw 0
@@ -88,7 +90,7 @@ ret
 
 
 
-;=========== FUNCTION: initScene() HELPERS: initRoad(), drawRoadColumn(), setRoadSideChar(), setRoadLaneChar() ==============
+;=========== FUNCTION: initScene() HELPERS: initRoad(), drawVertLine() ==============
 ;draws background for the first time
 initScene:
 pusha
@@ -96,6 +98,8 @@ pusha
 
         ;initialize es and di
         call initVidSeg
+	
+	call initBG
 
         call initRoad
 
@@ -105,6 +109,42 @@ pusha
 
 popa
 ret
+
+
+;prints plain background for the first time (assumes initVidSeg called by parent function)
+initBG:
+pusha
+
+	;print left side
+	mov dx, 0		;segment offset
+	leftLoop:
+		push dx 	;x position
+		mov ax, 0x2020	;character
+		push ax
+		call drawVertLine
+	inc dx
+	cmp dx, [roadStart]
+	jb leftLoop
+
+	;print right side
+	mov dx, [roadEnd]
+	rightLoop:
+		push dx 	;x position
+		mov ax, 0x2020	;character
+		push ax
+		call drawVertLine
+	inc dx
+	cmp dx, 80
+	jb rightLoop
+
+		
+popa
+ret
+
+
+
+
+
 
 
 ;prints road for the first time (assumes initVidSeg called by parent function)
@@ -142,6 +182,7 @@ pusha
 
 	;move di to x location, top row
 	mov di, [bp + 6]
+	shl di, 1			;multiply by 2 to convert to segment offset
 
 	;25 row loop
 	mov cx, 25
@@ -163,7 +204,7 @@ ret 4
 
 
 
-;=========== FUNCTION END: initScene() HELPERS: initRoad(), drawRoadColumn(), setRoadSideChar(), setRoadLaneChar() ==============
+;=========== FUNCTION END: initScene() HELPERS: initRoad(), drawVertLine()  ==============
 
 
 

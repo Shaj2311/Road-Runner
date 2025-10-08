@@ -1,0 +1,11 @@
+roadStart
+roadEnd
+roadWidth
+roadLaneX
+The above are all POSITIONS, NOT offsets.
+MULTIPLY THEM BY 2
+
+
+drawVertLine()
+This function takes x POSITION as argument
+it multiplies the value by 2 on its own, no need to worry about that
