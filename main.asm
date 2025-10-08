@@ -111,104 +111,58 @@ ret
 initRoad:
 pusha
         
-        ;loop counter
-        mov cx, 1
-        roadLoop:
-                push cx                 ;line number
-                call drawRoadColumn
+	;push params
+	push word [roadStart]	;x position
+	push 0x07BA		;character
+	call drawVertLine
 
-                ;loop back
-                inc cx
-                cmp cx, 25
-                jb roadLoop
+	push word [roadLane1]	;x position
+	push 0x077C		;character
+	call drawVertLine
+
+	push word [roadLane2]	;x position
+	push 0x077C		;character
+	call drawVertLine
+	
+	push word [roadEnd]	;x position
+	push 0x07BA		;character
+	call drawVertLine
 
 popa
 ret
 
 
 
-
-drawRoadColumn:
+drawVertLine:
 push bp
 mov bp, sp
-push ax
-push cx
-push bx
-push es
-push di
-push si
-;TODO: FIX POPS
-        mov si, 0
-        ;store vertical offset in ax
-        mov bx, [bp + 4]        ;dx = line number
-        mov ax, 160
-        mul bx
-        
+pusha
+	;copy character to ax
+	mov ax, [bp + 4]
 
-        ;add vertical offset to di
-        add si, ax              
+	;move di to x location, top row
+	mov di, [bp + 6]
 
-        ;add horizontal offset to di
-        add si, [roadStart]
+	;25 row loop
+	mov cx, 25
 
-        ;SI NOW POINTS TO CORRECT DRAWING LOCATION
-        ;DI POINTS TO FIRST LINE + HORIZONTAL OFFSET
+	vertLineLoop:
+		;print to screen
+		mov [es:di], ax
+		;move di to next row
+		add di, 160
+	;loop back
+	loop vertLineLoop
 
+	
 
-
-        mov cx, [roadWidth]     ;loop counter
-        mov di, [roadStart]     ;point di to start of road (first line)
-        ;draw one column
-        initRoadColumn:
-
-                ; ||    |       |       ||
-                ;
-
-                ;load correct character in ax
-                mov ax, 0x0720  ;space with normal attribute
-
-                cmp di, [roadStart]     ;start of road: ||
-                je setRoadSideChar
-
-                cmp di, [roadLane0]       ;lane: |
-                je setRoadLaneChar
-
-                cmp di, [roadLane1]       ;lane: |
-                je setRoadLaneChar
-
-                cmp di, [roadLane2]       ;lane: |
-                je setRoadLaneChar
-
-                cmp di, [roadEnd]       ;end of road: ||
-                je setRoadSideChar
-
-                initRoadColumnRet:
-
-                ;draw character to screen
-                mov [es:si], ax
-                add di, 2
-                add si, 2
-                ;loop back
-        loop initRoadColumn
-pop si
-pop di
-pop es
-pop bx
-pop cx
-pop ax
+popa
 pop bp
-ret 2
+ret 4
 
 
 
-setRoadSideChar:
-        mov ah, 0x07    ;normal attribute
-        mov al, 0xBA    ;||
-jmp initRoadColumnRet
-setRoadLaneChar:
-        mov ah, 0x07    ;normal attribute
-        mov al, 0x7C     ;|
-jmp initRoadColumnRet
+
 ;=========== FUNCTION END: initScene() HELPERS: initRoad(), drawRoadColumn(), setRoadSideChar(), setRoadLaneChar() ==============
 
 
