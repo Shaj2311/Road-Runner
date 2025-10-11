@@ -10,10 +10,8 @@ roadLane1: dw 0
 roadLane2: dw 0
 roadEnd: dw 0
 
-sceneInitTest: db "Scene initialized"
-playerInitTest: db "Player initialized"
-sceneStrLength: dw 17
-playerStrLength: dw 18
+playerY: dw 20
+
 
 start:
         call initRoadValues
@@ -179,13 +177,18 @@ mov bp, sp
 
 pusha
 	;point di to x/y position
+	mov ax, [bp + 6]	;x position
+	push ax
 	mov ax, [bp + 4]	;y position
-	mov di, 160
-	mul di
+	push ax
+	call pointToXY
+	;mov ax, [bp + 4]	;y position
+	;mov di, 160
+	;mul di
 
-	mov di, [bp + 6]	;x position
-	shl di, 1
-	add di, ax		;add y position
+	;mov di, [bp + 6]	;x position
+	;shl di, 1
+	;add di, ax		;add y position
 
 	;load attribute
 	mov ah, 0x28	;green background, high intensity green foreground
@@ -339,10 +342,28 @@ pusha
         call initVidSeg
 
         ;print player
-
-
+	;mov ax, 20	;y position
+	;push ax
+	;mov ax, [roadLane1]	;x position
+	;push ax
+	;call drawCar
 popa
 ret
+
+
+drawCar:
+push bp
+mov bp, sp
+pusha
+
+	;print sample space
+	mov ax, 0x0720
+
+	
+
+popa
+pop bp
+ret 4
 ;=========== FUNCTION END: initPlayer() ==============
 
 
@@ -353,3 +374,22 @@ int 0x21
 
 
 
+
+pointToXY:
+push bp
+mov bp, sp
+push ax
+push bp
+	;point di to x/y position
+	mov ax, [bp + 4]	;y position
+	mov di, 160
+	mul di
+
+	mov di, [bp + 6]	;x position
+	shl di, 1
+	add di, ax		;add y position
+pop bp
+pop ax
+pop bp
+ret 4
+	
