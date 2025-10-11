@@ -90,7 +90,7 @@ ret
 
 
 
-;=========== FUNCTION: initScene() HELPERS: initRoad(), drawVertLine() ==============
+;=========== FUNCTION: initScene() HELPERS: initVidSeg(), initBG, initTrees(), drawTree(), initRoad(), drawVertLine(), drawLane()  ==============
 ;draws background for the first time
 initScene:
 pusha
@@ -313,9 +313,16 @@ pop bp
 ret
 
 
-;TODO: Add all new functions to separator
+;points es:di to start of video segment
+initVidSeg:
+push ax
+mov ax, 0xb800
+mov es, ax
+mov di, 0
+pop ax
+ret
 
-;=========== FUNCTION END: initScene() HELPERS: initRoad(), drawVertLine()  ==============
+;=========== FUNCTION END: initScene() HELPERS: initVidSeg(), initBG, initTrees(), drawTree(), initRoad(), drawVertLine(), drawLane()  ==============
 
 
 
@@ -346,11 +353,3 @@ int 0x21
 
 
 
-;points es:di to start of video segment
-initVidSeg:
-push ax
-mov ax, 0xb800
-mov es, ax
-mov di, 0
-pop ax
-ret
