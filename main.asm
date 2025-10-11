@@ -101,6 +101,8 @@ pusha
 	
 	call initBG
 
+	call initTrees
+
         call initRoad
 
         ;print scene
@@ -143,6 +145,73 @@ ret
 
 
 
+;Assumes initVidSeg called by parent function
+initTrees:
+	;left side
+	push 6		;x position
+	push 4		;y position
+	call drawTree
+
+	push 2
+	push 11
+	call drawTree
+
+	push 9
+	push 19
+	call drawTree
+
+
+	;right side
+	push 74
+	push 8
+	call drawTree
+
+	push 68
+	push 17
+	call drawTree
+ret
+
+
+
+drawTree:
+push bp
+mov bp, sp
+
+pusha
+	;point di to x/y position
+	mov ax, [bp + 4]	;y position
+	mov di, 160
+	mul di
+
+	mov di, [bp + 6]	;x position
+	shl di, 1
+	add di, ax		;add y position
+
+	;load attribute
+	mov ah, 0x28	;green background, high intensity green foreground
+
+	;print tree
+	mov al, '<'
+	mov [es:di], ax
+	add di, 2
+
+	mov al, '^'
+	mov [es:di], ax
+	add di, 2
+
+	mov al, '>'
+	mov [es:di], ax
+	
+	sub di, 2
+	add di, 160
+	mov al, '|'
+	mov [es:di], ax
+
+
+popa
+pop bp
+ret 4
+	
 
 
 
@@ -158,11 +227,11 @@ pusha
 
 	push word [roadLane1]	;x position
 	push 0x077C		;character
-	call drawVertLine
+	call drawLane
 
 	push word [roadLane2]	;x position
 	push 0x077C		;character
-	call drawVertLine
+	call drawLane
 	
 	push word [roadEnd]	;x position
 	push 0x07BA		;character
@@ -202,7 +271,49 @@ pop bp
 ret 4
 
 
+drawLane:
+push bp
+mov bp, sp
+pusha
+	;copy character to ax
+	mov ax, [bp + 4]
 
+	;move di to x location, top row
+	mov di, [bp + 6]
+	shl di, 1			;multiply by 2 to convert to segment offset
+
+	;25 row loop
+	mov cx, 25
+	mov dx, 0
+	
+	laneLoop:
+		
+		cmp dx, 3
+		jne skipReset
+
+		;skip drawing
+		mov dx, 0
+		add di, 160
+		dec cx
+		jmp laneLoop
+
+		;draw character
+		skipReset:
+		mov [es:di], ax
+		add di, 160
+		inc dx
+
+		
+		loop laneLoop
+	
+
+
+popa
+pop bp
+ret
+
+
+;TODO: Add all new functions to separator
 
 ;=========== FUNCTION END: initScene() HELPERS: initRoad(), drawVertLine()  ==============
 
