@@ -10,7 +10,7 @@ roadLane1: dw 0
 roadLane2: dw 0
 roadEnd: dw 0
 
-playerY: dw 20
+playerY: dw 19
 
 
 start:
@@ -335,15 +335,21 @@ pusha
         call initVidSeg
 
         ;print player
-	mov ax, 20	;y position
+	mov ax, [playerY]	;y position
 	push ax
+	;calculate x position
+	;TODO: Calculate the actual middle-of-lane position
 	mov ax, [roadLane1]	;x position
+	add ax, [roadLane2]
+	shr ax, 1	;divide by 2 (average)
 	push ax
 	call drawCar
+	
 popa
 ret
 
 
+;takes x and y as parameters, prints car such that MIDDLE of front bumper touches (x,y)
 drawCar:
 push bp
 mov bp, sp
@@ -353,6 +359,7 @@ pusha
 	mov es, ax
 
 	mov ax, [bp + 4]	;x position
+	sub ax, 2		;offset by 2 locations to center car
 	push ax
 	mov ax, [bp + 6]	;y position
 	push ax
@@ -366,10 +373,10 @@ pusha
 
 
 	;print rectangle
-	mov cx, 5
+	mov cx, 6
 	carOuterLoop:
 	push cx
-		mov cx, 4
+		mov cx, 5
 		push di
 		carInnerLoop:
 			mov ax, 0x4020
