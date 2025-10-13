@@ -24,6 +24,12 @@ start:
         call clrscr
         call initScene
         call initPlayer
+
+	mov ax, 20
+	push ax
+	call delay
+
+
         jmp terminate
 
 
@@ -508,6 +514,37 @@ pop ax
 pop bp
 ret 4
 ;=========== FUNCTION END: pointToXY(X,Y) ==============
+
+
+
+
+
+;=========== FUNCTION: delay(time) ==============
+delay:
+push bp
+mov bp, sp
+push ax
+push bp
+	mov cx, [bp + 4]
+
+	delayOuter:
+	push cx
+
+		mov cx, 0xFFFF
+
+		delayInner:
+			loop delayInner
+
+	pop cx
+	loop delayOuter
+pop bp
+pop ax
+pop bp
+ret 2
+;=========== FUNCTION END: delay(time) ==============
+
+
+
 
 
 
