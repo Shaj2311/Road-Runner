@@ -11,6 +11,8 @@ roadLane2: dw 0
 roadEnd: dw 0
 
 playerY: dw 19
+carWidth: dw 6
+carHeight: dw 5
 
 
 start:
@@ -325,7 +327,7 @@ ret
 
 
 
-;=========== FUNCTION: initPlayer() ==============
+;=========== FUNCTION: initPlayer() HELPERS: drawCar(X,Y) ==============
 ;draws background for the first time
 initPlayer:
 pusha
@@ -338,19 +340,18 @@ pusha
 	mov ax, [playerY]	;y position
 	push ax
 	;calculate x position
-	;TODO: Calculate the actual middle-of-lane position
 	mov ax, [roadLane1]	;x position
 	add ax, [roadLane2]
 	shr ax, 1	;divide by 2 (average)
 	push ax
-	call drawCar
+	call drawPlayer
 	
 popa
 ret
 
 
 ;takes x and y as parameters, prints car such that MIDDLE of front bumper touches (x,y)
-drawCar:
+drawPlayer:
 push bp
 mov bp, sp
 pusha
@@ -367,16 +368,18 @@ pusha
 
 
 
-	
 
 
 
+
+
+	push di
 
 	;print rectangle
-	mov cx, 6
+	mov cx, [carWidth]
 	carOuterLoop:
 	push cx
-		mov cx, 5
+		mov cx, [carHeight]
 		push di
 		carInnerLoop:
 			mov ax, 0x4020
@@ -388,22 +391,36 @@ pusha
 	pop cx
 	loop carOuterLoop
 
+	pop di
+	;print cool stuff
+	mov ah, 0x04
+	mov al, '/'
+	mov [es:di], ax
+	mov [es:di + 160*(5 - 1) + (12 - 2)], ax	;(height-1) spaces down, (width-1) spaces across
 	
+	mov al, '\'
+	mov [es:di + (12 - 2)], ax
+	mov [es:di + 160*(5 - 1)], ax			;(height-1) spaces down
+
+
+
 
 popa
 pop bp
 ret 4
-;=========== FUNCTION END: initPlayer() ==============
+;=========== FUNCTION END: initPlayer() HELPERS: drawCar(X,Y) ==============
+
+
+;FIXME
+;=========== FUNCTION: movePlayer(isLeft) ==============
+movePlayer:
+;Under construction :)
+;=========== FUNCTION: movePlayer(isLeft) ==============
 
 
 
-terminate:
-mov ax, 0x4c00
-int 0x21
 
-
-
-
+;=========== FUNCTION: pointToXY(X,Y) ==============
 pointToXY:
 push bp
 mov bp, sp
@@ -421,4 +438,10 @@ pop bp
 pop ax
 pop bp
 ret 4
-	
+;=========== FUNCTION END: pointToXY(X,Y) ==============
+
+
+
+terminate:
+mov ax, 0x4c00
+int 0x21
