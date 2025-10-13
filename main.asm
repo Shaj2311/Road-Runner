@@ -392,6 +392,24 @@ pusha
 	mov [es:di + (12 - 2)], ax
 	mov [es:di + 160*(5 - 1)], ax			;(height-1) spaces down
 
+	
+
+	;draw cool smol rectangle
+	;push di
+	add di, 160
+	add di, 2
+	mov ax, [carWidth]
+	sub ax, 2
+	push ax
+	mov ax, [carHeight]
+	sub ax, 2
+	push ax
+	mov ah, 0x04
+	mov al, ' '
+	push ax
+	call drawRect
+	;pop di
+
 
 
 
