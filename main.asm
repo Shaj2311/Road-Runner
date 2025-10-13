@@ -374,9 +374,9 @@ pusha
 
 
 	;draw car rectangle
-	mov ax, [carWidth]
-	push ax
 	mov ax, [carHeight]
+	push ax
+	mov ax, [carWidth]
 	push ax
 	mov ax, 0x4020
 	push ax
@@ -398,10 +398,10 @@ pusha
 	;push di
 	add di, 160
 	add di, 2
-	mov ax, [carWidth]
+	mov ax, [carHeight]
 	sub ax, 2
 	push ax
-	mov ax, [carHeight]
+	mov ax, [carWidth]
 	sub ax, 2
 	push ax
 	mov ah, 0x04
@@ -419,6 +419,7 @@ ret 4
 
 
 
+;drawRect(width, height)
 drawRect:
 push bp
 mov bp, sp
