@@ -327,7 +327,7 @@ ret
 
 
 
-;=========== FUNCTION: initPlayer() HELPERS: drawCar(X,Y) ==============
+;=========== FUNCTION: initPlayer() HELPERS: drawPlayer(X,Y) ==============
 ;draws background for the first time
 initPlayer:
 pusha
@@ -373,25 +373,15 @@ pusha
 
 
 
-	push di
+	;draw car rectangle
+	mov ax, [carWidth]
+	push ax
+	mov ax, [carHeight]
+	push ax
+	mov ax, 0x4020
+	push ax
+	call drawRect
 
-	;print rectangle
-	mov cx, [carHeight]
-	carOuterLoop:
-	push cx
-		mov cx, [carWidth]
-		push di
-		carInnerLoop:
-			mov ax, 0x4020
-			mov [es:di], ax
-			add di, 160
-		loop carInnerLoop
-		pop di
-	add di, 2
-	pop cx
-	loop carOuterLoop
-
-	pop di
 	;print cool stuff
 	mov ah, 0x04
 	mov al, '/'
@@ -408,7 +398,33 @@ pusha
 popa
 pop bp
 ret 4
-;=========== FUNCTION END: initPlayer() HELPERS: drawCar(X,Y) ==============
+
+
+
+drawRect:
+push bp
+mov bp, sp
+pusha
+	
+	;print rectangle
+	mov ax, [bp + 4]
+	mov cx, [bp + 6]
+	rectOuter:
+	push cx
+		mov cx, [bp + 8]
+		push di
+		rectInner:
+			mov [es:di], ax
+			add di, 160
+		loop rectInner
+		pop di
+	add di, 2
+	pop cx
+	loop rectOuter
+popa
+pop bp
+ret 6
+;=========== FUNCTION END: initPlayer() HELPERS: drawPlayer(X,Y) ==============
 
 
 ;FIXME
