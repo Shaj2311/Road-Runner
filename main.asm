@@ -11,8 +11,8 @@ roadLane2: dw 0
 roadEnd: dw 0
 
 playerY: dw 19
-carWidth: dw 6
-carHeight: dw 5
+carWidth: dw 5
+carHeight: dw 6
 
 
 start:
@@ -376,10 +376,10 @@ pusha
 	push di
 
 	;print rectangle
-	mov cx, [carWidth]
+	mov cx, [carHeight]
 	carOuterLoop:
 	push cx
-		mov cx, [carHeight]
+		mov cx, [carWidth]
 		push di
 		carInnerLoop:
 			mov ax, 0x4020
