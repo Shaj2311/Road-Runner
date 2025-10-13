@@ -220,7 +220,7 @@ pusha
         
 	;push params
 	push word [roadStart]	;x position
-	push 0x07BA		;character
+	push 0x06BA		;character
 	call drawVertLine
 
 	push word [roadLane1]	;x position
@@ -232,7 +232,7 @@ pusha
 	call drawLane
 	
 	push word [roadEnd]	;x position
-	push 0x07BA		;character
+	push 0x06BA		;character
 	call drawVertLine
 
 popa
