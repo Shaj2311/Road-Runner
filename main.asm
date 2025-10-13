@@ -182,13 +182,6 @@ pusha
 	mov ax, [bp + 4]	;y position
 	push ax
 	call pointToXY
-	;mov ax, [bp + 4]	;y position
-	;mov di, 160
-	;mul di
-
-	;mov di, [bp + 6]	;x position
-	;shl di, 1
-	;add di, ax		;add y position
 
 	;load attribute
 	mov ah, 0x28	;green background, high intensity green foreground
@@ -313,7 +306,7 @@ pusha
 
 popa
 pop bp
-ret
+ret 4
 
 
 ;points es:di to start of video segment
@@ -342,11 +335,11 @@ pusha
         call initVidSeg
 
         ;print player
-	;mov ax, 20	;y position
-	;push ax
-	;mov ax, [roadLane1]	;x position
-	;push ax
-	;call drawCar
+	mov ax, 20	;y position
+	push ax
+	mov ax, [roadLane1]	;x position
+	push ax
+	call drawCar
 popa
 ret
 
@@ -356,8 +349,37 @@ push bp
 mov bp, sp
 pusha
 
-	;print sample space
-	mov ax, 0x0720
+	mov ax, 0xb800
+	mov es, ax
+
+	mov ax, [bp + 4]	;x position
+	push ax
+	mov ax, [bp + 6]	;y position
+	push ax
+	call pointToXY
+
+
+
+	
+
+
+
+
+	;print rectangle
+	mov cx, 5
+	carOuterLoop:
+	push cx
+		mov cx, 4
+		push di
+		carInnerLoop:
+			mov ax, 0x4020
+			mov [es:di], ax
+			add di, 160
+		loop carInnerLoop
+		pop di
+	add di, 2
+	pop cx
+	loop carOuterLoop
 
 	
 
