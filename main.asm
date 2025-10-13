@@ -10,9 +10,13 @@ roadLane1: dw 0
 roadLane2: dw 0
 roadEnd: dw 0
 
+; Here, it appears as if the height of the car 
+; is lesser than the width.
+; Visually, this is not the case, because 
+; each video block is rectangular, not square
 playerY: dw 19
-carWidth: dw 5
-carHeight: dw 6
+carHeight: dw 5
+carWidth: dw 6
 
 
 start:
@@ -302,7 +306,7 @@ pusha
 		inc dx
 
 		
-		loop laneLoop
+	loop laneLoop
 	
 
 
@@ -395,20 +399,50 @@ pusha
 	
 
 	;draw cool smol rectangle
-	;push di
-	add di, 160
-	add di, 2
-	mov ax, [carHeight]
-	sub ax, 2
-	push ax
-	mov ax, [carWidth]
-	sub ax, 2
-	push ax
-	mov ah, 0x04
-	mov al, ' '
-	push ax
-	call drawRect
-	;pop di
+	push di
+		add di, 160
+		add di, 160
+		add di, 2
+		add di, 2
+		mov ax, [carHeight]
+		sub ax, 4
+		push ax
+		mov ax, [carWidth]
+		sub ax, 4
+		push ax
+		mov ah, 0x04
+		mov al, ' '
+		push ax
+		call drawRect
+	pop di
+
+	;draw cool wheels
+	push di
+	mov cx, 0x08DB
+	mov [es:di + 160 - 2], cx
+
+	push di
+		mov ax, [carWidth]	;get width of car
+		shl ax, 1		;multiply by 2 (convert to byte offset)
+		add di, ax
+		mov [es:di + 160], cx
+	pop di
+
+	push di
+		mov ax, [carHeight]	;get height of car
+		sub ax, 2		;both bumpers
+		mov bx, 160		;multiply by 160
+		mul bx
+		add di, ax
+		mov [es:di - 2], cx
+		mov ax, [carWidth]
+		shl ax, 1
+		add di, ax
+		mov [es:di], cx
+	pop di
+	;mov [es:di + 160 + 2*4] dx
+	pop di
+
 
 
 
@@ -419,7 +453,7 @@ ret 4
 
 
 
-;drawRect(width, height)
+;drawRect(height, width)
 drawRect:
 push bp
 mov bp, sp
