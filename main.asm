@@ -14,6 +14,8 @@ roadEnd: dw 0
 ; is lesser than the width.
 ; Visually, this is not the case, because 
 ; each video block is rectangular, not square
+;TODO: make player functions use this memory label instead of parameters
+playerX: dw 0
 playerY: dw 19
 carHeight: dw 5
 carWidth: dw 6
@@ -25,10 +27,31 @@ start:
         call initScene
         call initPlayer
 
-	mov ax, 20
+
+	mov ax, 100
 	push ax
 	call delay
 
+	mov cx, 0xFFFF
+	gameLoop:
+		;update scene
+		;TEST
+		mov ax, [playerY]
+		push ax
+		mov ax, [playerX]
+		push ax
+		call erasePlayer
+		call scrollDown
+
+		;update player
+		call initPlayer
+
+		;frame delay
+		mov ax, 20
+		push ax
+		call delay
+
+	loop gameLoop
 
         jmp terminate
 
@@ -353,6 +376,7 @@ pusha
 	mov ax, [roadLane1]	;x position
 	add ax, [roadLane2]
 	shr ax, 1	;divide by 2 (average)
+	mov [playerX], ax
 	push ax
 	call drawPlayer
 	
@@ -523,8 +547,7 @@ ret 4
 delay:
 push bp
 mov bp, sp
-push ax
-push bp
+push cx
 	mov cx, [bp + 4]
 
 	delayOuter:
@@ -537,14 +560,120 @@ push bp
 
 	pop cx
 	loop delayOuter
-pop bp
-pop ax
+pop cx
 pop bp
 ret 2
 ;=========== FUNCTION END: delay(time) ==============
 
 
 
+;=========== FUNCTION: scrollDown() ==============
+scrollDown:
+;pusha
+push ax
+push cx
+push si
+push di 
+push es
+push ds
+
+	;Source = last line 
+	mov ax, 0xb800
+	mov ds, ax
+	mov ax, 4000
+	mov si, ax
+
+	;Destination = first line after end of video segment
+	mov ax, 0xb800
+	mov es, ax
+	mov ax, 4000
+	add ax, 160
+	mov di, ax
+
+	
+	mov cx, 2000 	;entire screen
+
+	std		;override from the bottom up
+	rep movsw	;scroll down
+
+	;FIXME
+	;move scrolled line to top
+	mov si, 4000
+	mov di, 0
+	mov cx, 80
+	
+	cld 
+	rep movsw
+
+
+pop ds
+pop es
+pop di 
+pop si 
+pop cx
+pop ax
+;popa
+ret
+;=========== FUNCTION: erasePlayer() ==============
+
+erasePlayer:
+push bp
+mov bp, sp
+pusha
+
+	mov ax, 0xb800
+	mov es, ax
+
+	mov ax, [bp + 4]	;x position
+	sub ax, 2		;offset by 2 locations to center erase grid
+	push ax
+	mov ax, [bp + 6]	;y position
+	push ax
+	call pointToXY
+
+	;draw black rectangle (road)
+	mov ax, [carHeight]
+	push ax
+	mov ax, [carWidth]
+	push ax
+	mov ax, 0x0720
+	push ax
+	call drawRect
+
+	;erase cool wheels
+	push di
+	mov cx, 0x0720
+	mov [es:di + 160 - 2], cx
+
+	push di
+		mov ax, [carWidth]	;get width of car
+		shl ax, 1		;multiply by 2 (convert to byte offset)
+		add di, ax
+		mov [es:di + 160], cx
+	pop di
+
+	push di
+		mov ax, [carHeight]	;get height of car
+		sub ax, 2		;both bumpers
+		mov bx, 160		;multiply by 160
+		mul bx
+		add di, ax
+		mov [es:di - 2], cx
+		mov ax, [carWidth]
+		shl ax, 1
+		add di, ax
+		mov [es:di], cx
+	pop di
+	;mov [es:di + 160 + 2*4] dx
+	pop di
+
+popa
+pop bp
+ret 4
+
+
+
+;=========== FUNCTION END: erasePlayer() ==============
 
 
 
