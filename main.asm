@@ -10,15 +10,21 @@ roadLane1: dw 0
 roadLane2: dw 0
 roadEnd: dw 0
 
-; Here, it appears as if the height of the car 
-; is lesser than the width.
-; Visually, this is not the case, because 
-; each video block is rectangular, not square
 ;TODO: make player functions use this memory label instead of parameters
 playerX: dw 0
 playerY: dw 19
+; According to these values, it appears as if
+; the height of the car is lesser than the width.
+; Visually, this is not the case, because 
+; each video block is rectangular, not square
+carWidth: dw 8
 carHeight: dw 5
-carWidth: dw 6
+carRectWidth: dw 6
+carRectHeight: dw 5
+
+
+;state of road (under the car)
+underCar: times 40 dw 0
 
 
 start:
@@ -41,6 +47,7 @@ start:
 		mov ax, [playerX]
 		push ax
 		call erasePlayer
+
 		call scrollDown
 
 		;update player
@@ -376,7 +383,7 @@ pusha
 	mov ax, [roadLane1]	;x position
 	add ax, [roadLane2]
 	shr ax, 1	;divide by 2 (average)
-	mov [playerX], ax
+	mov [playerX], ax	;write x position of player
 	push ax
 	call drawPlayer
 	
@@ -393,6 +400,8 @@ pusha
 	mov ax, 0xb800
 	mov es, ax
 
+
+	;point di to player position
 	mov ax, [bp + 4]	;x position
 	sub ax, 2		;offset by 2 locations to center car
 	push ax
@@ -403,14 +412,24 @@ pusha
 
 
 
-
-
+	;store state of road
+	mov ax, 0		;recursive iteration number
+	push ax 		
+	mov ax, [carHeight]	;height (number of rows)
+	push ax
+	mov ax, [carWidth]	;width (number of columns)
+	push ax
+	mov ax, [bp + 4]	;x position
+	push ax
+	mov ax, [bp + 6]	;y position
+	push ax
+	call storeRoadState
 
 
 	;draw car rectangle
-	mov ax, [carHeight]
+	mov ax, [carRectHeight]
 	push ax
-	mov ax, [carWidth]
+	mov ax, [carRectWidth]
 	push ax
 	mov ax, 0x4020
 	push ax
@@ -434,10 +453,10 @@ pusha
 		add di, 160
 		add di, 2
 		add di, 2
-		mov ax, [carHeight]
+		mov ax, [carRectHeight]
 		sub ax, 4
 		push ax
-		mov ax, [carWidth]
+		mov ax, [carRectWidth]
 		sub ax, 4
 		push ax
 		mov ah, 0x04
@@ -452,20 +471,20 @@ pusha
 	mov [es:di + 160 - 2], cx
 
 	push di
-		mov ax, [carWidth]	;get width of car
+		mov ax, [carRectWidth]	;get width of car
 		shl ax, 1		;multiply by 2 (convert to byte offset)
 		add di, ax
 		mov [es:di + 160], cx
 	pop di
 
 	push di
-		mov ax, [carHeight]	;get height of car
+		mov ax, [carRectHeight]	;get height of car
 		sub ax, 2		;both bumpers
 		mov bx, 160		;multiply by 160
 		mul bx
 		add di, ax
 		mov [es:di - 2], cx
-		mov ax, [carWidth]
+		mov ax, [carRectWidth]
 		shl ax, 1
 		add di, ax
 		mov [es:di], cx
@@ -480,6 +499,74 @@ pusha
 popa
 pop bp
 ret 4
+
+
+storeRoadState:
+push bp
+mov bp, sp 
+pusha 
+push es
+push ds
+	;check height (base case)
+	mov ax, [bp + 10]
+	cmp ax, 0 
+	je storeRoadStateRet
+
+
+	;point to position
+	mov ax, [bp + 6]	;x 
+	push ax 
+	mov ax, [bp + 4]	;y 
+	push ax
+	call pointToXY
+
+
+	;point ds:si to es:di 
+	push es
+	pop ds
+	mov si, di 
+
+	;point es:di to underCar label
+	push cs
+	pop es
+	mov di, underCar
+	;offset by number of iterations completed
+	mov ax, [bp + 12]
+	mov cx, [bp + 8]
+	mul cx
+	shl ax, 1 	;convert to word offset
+	add di, ax
+
+
+	;move one row 
+	mov cx, [bp + 8]	;width of rectangle being stored
+	rep movsw	;store row in label
+
+	;repeat (recursive)
+	mov ax, [bp + 12]
+	inc ax 			;one more iteration done
+	push ax
+	mov ax, [bp + 10]
+	dec ax 			;one less row 
+	push ax 
+	mov ax, [bp + 8]	;width is same
+	push ax
+	mov ax, [bp + 6]
+	push ax 		;same x position 
+	mov ax, [bp + 4]
+	inc ax 			;increase y position (next row)
+	push ax
+	call storeRoadState
+
+	
+
+	storeRoadStateRet:
+pop ds
+pop es
+popa 
+pop bp
+ret 10
+
 
 
 
@@ -631,10 +718,11 @@ pusha
 	push ax
 	call pointToXY
 
-	;draw black rectangle (road)
-	mov ax, [carHeight]
+	;draw road (from underCar label)
+	;actually, this draws a black rectangle
+	mov ax, [carRectHeight]
 	push ax
-	mov ax, [carWidth]
+	mov ax, [carRectWidth]
 	push ax
 	mov ax, 0x0720
 	push ax
@@ -646,20 +734,20 @@ pusha
 	mov [es:di + 160 - 2], cx
 
 	push di
-		mov ax, [carWidth]	;get width of car
+		mov ax, [carRectWidth]	;get width of car
 		shl ax, 1		;multiply by 2 (convert to byte offset)
 		add di, ax
 		mov [es:di + 160], cx
 	pop di
 
 	push di
-		mov ax, [carHeight]	;get height of car
+		mov ax, [carRectHeight]	;get height of car
 		sub ax, 2		;both bumpers
 		mov bx, 160		;multiply by 160
 		mul bx
 		add di, ax
 		mov [es:di - 2], cx
-		mov ax, [carWidth]
+		mov ax, [carRectWidth]
 		shl ax, 1
 		add di, ax
 		mov [es:di], cx
