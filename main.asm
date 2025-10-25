@@ -51,7 +51,7 @@ start:
 		call scrollDown
 
 		;update player
-		call initPlayer
+		;call initPlayer
 
 		;frame delay
 		mov ax, 20
@@ -402,10 +402,10 @@ pusha
 
 
 	;point di to player position
-	mov ax, [bp + 4]	;x position
+	mov ax, [playerX]	;x position
 	sub ax, 2		;offset by 2 locations to center car
 	push ax
-	mov ax, [bp + 6]	;y position
+	mov ax, [playerY]	;y position
 	push ax
 	call pointToXY
 
@@ -431,7 +431,7 @@ pusha
 	push ax
 	mov ax, [carRectWidth]
 	push ax
-	mov ax, 0x4020
+	mov ax, 0x4020	;attribute + character
 	push ax
 	call drawRect
 
@@ -570,7 +570,7 @@ ret 10
 
 
 
-;drawRect(height, width)
+;drawRect(height, width, attribute+character)
 drawRect:
 push bp
 mov bp, sp
@@ -683,7 +683,6 @@ push ds
 	std		;override from the bottom up
 	rep movsw	;scroll down
 
-	;FIXME
 	;move scrolled line to top
 	mov si, 4000
 	mov di, 0
@@ -711,22 +710,38 @@ pusha
 	mov ax, 0xb800
 	mov es, ax
 
-	mov ax, [bp + 4]	;x position
-	sub ax, 2		;offset by 2 locations to center erase grid
+	mov ax, [playerX]	;x position
+	;sub ax, 2		;offset by 2 locations to center erase grid
 	push ax
-	mov ax, [bp + 6]	;y position
+	mov ax, [playerY]	;y position
 	push ax
 	call pointToXY
 
 	;draw road (from underCar label)
 	;actually, this draws a black rectangle
-	mov ax, [carRectHeight]
-	push ax
-	mov ax, [carRectWidth]
-	push ax
-	mov ax, 0x0720
-	push ax
-	call drawRect
+	; mov ax, [carRectHeight]
+	; push ax
+	; mov ax, [carRectWidth]
+	; push ax
+	; mov ax, 0x0720
+	; push ax
+	; call drawRect
+
+	;FIXME
+	mov si, underCar	;point si to underCar data
+	mov cx, [carHeight]
+	_erase_next_row_:
+		push di
+		push cx
+			mov cx, [carWidth]
+			mov ax, [ds:si]	;test
+			rep movsw
+		pop cx
+		pop di 
+	add di, 160
+	loop _erase_next_row_
+
+
 
 	;erase cool wheels
 	push di
