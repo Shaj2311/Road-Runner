@@ -23,41 +23,37 @@ carRectWidth: dw 6
 carRectHeight: dw 5
 
 
-;state of road (under the car)
-underCar: times 40 dw 0
+;screen state (without player car)
+screenState: times 2000 dw 0
 
 
 start:
         call initRoadValues
         call clrscr
         call initScene
+	call saveScreenState
         call initPlayer
+
+
 
 
 	mov ax, 100
 	push ax
 	call delay
 
-	mov cx, 0xFFFF
 	gameLoop:
-		;update scene
-		;TEST
-		mov ax, [playerY]
-		push ax
-		mov ax, [playerX]
-		push ax
-		call erasePlayer
+	mov cx, 1
 
-		call scrollDown
+		;scroll down + reprint animation
+		call moveScreen
 
-		;update player
-		;call initPlayer
 
 		;frame delay
-		mov ax, 20
+		mov ax, 5
 		push ax
 		call delay
 
+	inc cx
 	loop gameLoop
 
         jmp terminate
@@ -402,28 +398,13 @@ pusha
 
 
 	;point di to player position
-	mov ax, [playerX]	;x position
-	sub ax, 2		;offset by 2 locations to center car
-	push ax
-	mov ax, [playerY]	;y position
-	push ax
-	call pointToXY
-
-
-
-
-	;store state of road
-	mov ax, 0		;recursive iteration number
-	push ax 		
-	mov ax, [carHeight]	;height (number of rows)
-	push ax
-	mov ax, [carWidth]	;width (number of columns)
-	push ax
 	mov ax, [bp + 4]	;x position
+	sub ax, 2		;offset by 2 locations to center car
 	push ax
 	mov ax, [bp + 6]	;y position
 	push ax
-	call storeRoadState
+	call pointToXY
+
 
 
 	;draw car rectangle
@@ -431,7 +412,7 @@ pusha
 	push ax
 	mov ax, [carRectWidth]
 	push ax
-	mov ax, 0x4020	;attribute + character
+	mov ax, 0x4020
 	push ax
 	call drawRect
 
@@ -501,76 +482,11 @@ pop bp
 ret 4
 
 
-storeRoadState:
-push bp
-mov bp, sp 
-pusha 
-push es
-push ds
-	;check height (base case)
-	mov ax, [bp + 10]
-	cmp ax, 0 
-	je storeRoadStateRet
-
-
-	;point to position
-	mov ax, [bp + 6]	;x 
-	push ax 
-	mov ax, [bp + 4]	;y 
-	push ax
-	call pointToXY
-
-
-	;point ds:si to es:di 
-	push es
-	pop ds
-	mov si, di 
-
-	;point es:di to underCar label
-	push cs
-	pop es
-	mov di, underCar
-	;offset by number of iterations completed
-	mov ax, [bp + 12]
-	mov cx, [bp + 8]
-	mul cx
-	shl ax, 1 	;convert to word offset
-	add di, ax
-
-
-	;move one row 
-	mov cx, [bp + 8]	;width of rectangle being stored
-	rep movsw	;store row in label
-
-	;repeat (recursive)
-	mov ax, [bp + 12]
-	inc ax 			;one more iteration done
-	push ax
-	mov ax, [bp + 10]
-	dec ax 			;one less row 
-	push ax 
-	mov ax, [bp + 8]	;width is same
-	push ax
-	mov ax, [bp + 6]
-	push ax 		;same x position 
-	mov ax, [bp + 4]
-	inc ax 			;increase y position (next row)
-	push ax
-	call storeRoadState
-
-	
-
-	storeRoadStateRet:
-pop ds
-pop es
-popa 
-pop bp
-ret 10
 
 
 
 
-;drawRect(height, width, attribute+character)
+;drawRect(height, width)
 drawRect:
 push bp
 mov bp, sp
@@ -654,8 +570,8 @@ ret 2
 
 
 
-;=========== FUNCTION: scrollDown() ==============
-scrollDown:
+;=========== FUNCTION: moveScreen() ==============
+moveScreen:
 ;pusha
 push ax
 push cx
@@ -664,6 +580,23 @@ push di
 push es
 push ds
 
+	; get last saved screen state
+	push cs
+	pop ds
+	mov si, screenState
+
+	push word 0 
+	push word 0 
+	call pointToXY
+
+	mov cx, 2000
+	cld
+	rep movsw
+
+
+
+
+	;scroll down
 	;Source = last line 
 	mov ax, 0xb800
 	mov ds, ax
@@ -692,91 +625,56 @@ push ds
 	rep movsw
 
 
+
+
+
+
+	;save new screen state
+	call saveScreenState
+
+
 pop ds
 pop es
+
+	;reprint car
+	push word [playerY]
+	push word [playerX]
+	call drawPlayer
+
+
 pop di 
 pop si 
 pop cx
 pop ax
 ;popa
 ret
-;=========== FUNCTION: erasePlayer() ==============
+;=========== FUNCTION: saveScreenState() ==============
 
-erasePlayer:
-push bp
-mov bp, sp
+
+saveScreenState:
 pusha
+push ds
+	push cs
+	pop es
+	mov di, screenState
 
-	mov ax, 0xb800
-	mov es, ax
+	push word 0xb800
+	pop ds
+	mov si, 0 
 
-	mov ax, [playerX]	;x position
-	;sub ax, 2		;offset by 2 locations to center erase grid
-	push ax
-	mov ax, [playerY]	;y position
-	push ax
-	call pointToXY
-
-	;draw road (from underCar label)
-	;actually, this draws a black rectangle
-	; mov ax, [carRectHeight]
-	; push ax
-	; mov ax, [carRectWidth]
-	; push ax
-	; mov ax, 0x0720
-	; push ax
-	; call drawRect
-
-	;FIXME
-	mov si, underCar	;point si to underCar data
-	mov cx, [carHeight]
-	_erase_next_row_:
-		push di
-		push cx
-			mov cx, [carWidth]
-			mov ax, [ds:si]	;test
-			rep movsw
-		pop cx
-		pop di 
-	add di, 160
-	loop _erase_next_row_
+	mov cx, 2000
+	cld 
+	rep movsw
+pop ds
+popa 
+ret
 
 
 
-	;erase cool wheels
-	push di
-	mov cx, 0x0720
-	mov [es:di + 160 - 2], cx
-
-	push di
-		mov ax, [carRectWidth]	;get width of car
-		shl ax, 1		;multiply by 2 (convert to byte offset)
-		add di, ax
-		mov [es:di + 160], cx
-	pop di
-
-	push di
-		mov ax, [carRectHeight]	;get height of car
-		sub ax, 2		;both bumpers
-		mov bx, 160		;multiply by 160
-		mul bx
-		add di, ax
-		mov [es:di - 2], cx
-		mov ax, [carRectWidth]
-		shl ax, 1
-		add di, ax
-		mov [es:di], cx
-	pop di
-	;mov [es:di + 160 + 2*4] dx
-	pop di
-
-popa
-pop bp
-ret 4
 
 
 
-;=========== FUNCTION END: erasePlayer() ==============
+;=========== FUNCTION END: saveScreenState() ==============
 
 
 
