@@ -372,15 +372,14 @@ pusha
         ;initialize es and di
         call initVidSeg
 
-        ;print player
-	mov ax, [playerY]	;y position
-	push ax
 	;calculate x position
 	mov ax, [roadLane1]	;x position
 	add ax, [roadLane2]
 	shr ax, 1	;divide by 2 (average)
 	mov [playerX], ax	;write x position of player
-	push ax
+
+
+        ;print player
 	call drawPlayer
 	
 popa
@@ -398,10 +397,10 @@ pusha
 
 
 	;point di to player position
-	mov ax, [bp + 4]	;x position
+	mov ax, [playerX]	;x position
 	sub ax, 2		;offset by 2 locations to center car
 	push ax
-	mov ax, [bp + 6]	;y position
+	mov ax, [playerY]	;y position
 	push ax
 	call pointToXY
 
@@ -479,7 +478,7 @@ pusha
 
 popa
 pop bp
-ret 4
+ret
 
 
 
@@ -637,8 +636,6 @@ pop ds
 pop es
 
 	;reprint car
-	push word [playerY]
-	push word [playerX]
 	call drawPlayer
 
 
