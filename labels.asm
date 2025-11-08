@@ -26,9 +26,8 @@ carRectHeight: dw 5
 screenState: times 2000 dw 0
 
 ;X,Y position of 2 oncoming cars
-carsXY: 
-dw 0,0,
-dw 0,0
+car1XY: dw 0,0
+car2XY: dw 0,0
 
 
 carDesign: 
@@ -39,5 +38,10 @@ dw 0x08DB, 0x04DB, 0x04DB, 0x04DB, 0x04DB, 0x04DB, 0x04DB, 0x08DB,
 dw 0x0000, 0x045c, 0x04DB, 0x04DB, 0x04DB, 0x04DB, 0x042f, 0x0000, 
 
 defaultCarAttrib: db 0x04
+
+trafficAttribs: db 0x01, 0x02, 0x03, 0x05
+trafficAttribIndex: db 0
+car1attrib: db 0
+car2attrib: db 0
 
 %endif

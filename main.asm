@@ -16,6 +16,24 @@ start:
         call initPlayer
 
 
+	;initialize traffic cars
+	mov ax, [roadLane0]
+	add ax, [roadLane1]
+	shr ax, 1
+	inc ax
+	push ax			;x
+	push word 0		;y
+	call initCar1
+
+	mov ax, [roadLane1]
+	add ax, [roadLane2]
+	shr ax, 1
+	inc ax
+	push ax			;x
+	push word 0		;y
+	call initCar2
+
+
 
 
 	mov ax, 100

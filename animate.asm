@@ -71,13 +71,7 @@ pop es
 	;reprint car
 	call drawPlayer
 
-	;TEST
-	mov ax, [roadLane0]
-	add ax, [roadLane1]
-	shr ax, 1
-	push ax
-	push word 10
-	call drawCar
+	call drawCar1
 
 pop di 
 pop si 
