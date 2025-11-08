@@ -22,27 +22,41 @@ push ds
 
 	;PRINT CAR FROM LABEL
 	;ds:si to end of carDesign
-	push cs 
-	pop ds
-	mov si, carDesign
-	sub si, 2
-	;es:di to end (bottom right) of car location on screen
-	add si, 80
-	add di, [carWidth]
-	sub di, 2
-	mov cx, [carHeight]
-	;print
-	std
-	carPrintLoop:
-		push cx
-		push di
-			mov cx, [carWidth]
-			rep movsw
-		pop di
-		pop cx
-	sub di, 160
-	loop carPrintLoop
- 	cld
+	push di
+		push cs 
+		pop ds
+		mov si, carDesign
+		sub si, 2
+		;es:di to end (bottom right) of car location on screen
+		add si, 80
+		add di, [carWidth]
+		sub di, 2
+		mov cx, [carHeight]
+		;print
+		std
+			carPrintLoop:
+				push cx
+				push di
+					mov cx, [carWidth]
+					push cx
+						carPrintInner:
+							;print 
+							lodsw
+							cmp ah, [defaultCarAttrib]
+							jne colorChangeSkip
+								mov ah, 0x01	;HARDCODED COLOR CHANGE FIXME
+							colorChangeSkip:
+							stosw
+						loop carPrintInner
+					pop cx
+				pop di
+				pop cx
+			sub di, 160
+			js skipCarPrinting
+			loop carPrintLoop
+		skipCarPrinting:
+		cld
+	pop di
 
 	
 
