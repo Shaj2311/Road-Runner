@@ -46,6 +46,28 @@ start:
 		;scroll down + reprint animation
 		call moveScreen
 
+		;TEST
+		cmp word [car1XY + 2], 30
+		jnae skipRedraw1
+			mov ax, [roadLane0]
+			add ax, [roadLane1]
+			shr ax, 1
+			inc ax
+			push ax			;x
+			push word 0		;y
+			call initCar1
+		skipRedraw1:
+		cmp word [car2XY + 2], 30
+		jnae skipRedraw2
+			mov ax, [roadLane2]
+			add ax, [roadEnd]
+			shr ax, 1
+			inc ax
+			push ax			;x
+			push word 0		;y
+			call initCar2
+		skipRedraw2:
+
 
 		;frame delay
 		mov ax, 5

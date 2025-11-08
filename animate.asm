@@ -78,6 +78,7 @@ pop es
 	inc word [car1XY+2]
 	inc word [car2XY+2]
 
+
 pop di 
 pop si 
 pop cx
