@@ -71,7 +71,12 @@ pop es
 	;reprint car
 	call drawPlayer
 
+	;draw traffic
 	call drawCar1
+	call drawCar2
+	;update traffic for next iteration
+	inc word [car1XY+2]
+	inc word [car2XY+2]
 
 pop di 
 pop si 

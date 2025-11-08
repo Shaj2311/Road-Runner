@@ -25,8 +25,8 @@ start:
 	push word 0		;y
 	call initCar1
 
-	mov ax, [roadLane1]
-	add ax, [roadLane2]
+	mov ax, [roadLane2]
+	add ax, [roadEnd]
 	shr ax, 1
 	inc ax
 	push ax			;x

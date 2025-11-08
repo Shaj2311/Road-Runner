@@ -27,7 +27,6 @@ ret 4
 
 
 
-
 ;========= FUNCTION: initCar2(x,y) =========
 initCar2:
 push bp
@@ -35,9 +34,9 @@ mov bp, sp
 pusha
 
 	;store x,y position (bottom left corner)
-	mov ax, [bp + 4]
+	mov ax, [bp + 6]
 	mov [car2XY], ax	;x
-	mov ax, [bp + 2]
+	mov ax, [bp + 4]
 	mov [car2XY + 2], ax	;y
 
 	;initialize attribute
@@ -53,7 +52,7 @@ ret 4
 
 
 
-;=============== FUNCTION: drawCar(x,y) ===============
+;=============== FUNCTION: drawCar1(x,y) ===============
 ;takes bottom left position of car
 drawCar1:
 push bp
@@ -84,27 +83,37 @@ push ds
 		mov cx, [carHeight]
 		;print
 		std
-			carPrintLoop:
+			car1PrintLoop:
+				cmp di, 4000
+				jae printCar1RowSkip
+
 				push cx
 				push di
 					mov cx, [carWidth]
-					push cx
-						carPrintInner:
-							;print 
-							lodsw
-							cmp ah, [defaultCarAttrib]
-							jne colorChangeSkip
-								mov ah, [car1attrib]
-							colorChangeSkip:
-							stosw
-						loop carPrintInner
-					pop cx
+					car1PrintInner:
+						;print 
+						lodsw
+						cmp ah, [defaultCarAttrib]	;change attribute
+						jne color1ChangeSkip
+							mov ah, [car1attrib]
+						color1ChangeSkip:
+						stosw
+					loop car1PrintInner
 				pop di
 				pop cx
-			sub di, 160
-			js skipCarPrinting
-			loop carPrintLoop
-		skipCarPrinting:
+
+				;WEIRD AND FANCY STUFF HAPPENING HERE
+				jmp NOprintCar1RowSkip	;if row IS printed, manual decrement of si not required, skip it
+				printCar1RowSkip:	;if row is NOT printed, manual decrement of SI is required, DO ITTT!!!
+				sub si, [carWidth]
+				sub si, [carWidth]
+				NOprintCar1RowSkip:
+				sub di, 160
+				js skipCar1Printing
+
+			loop car1PrintLoop
+
+		skipCar1Printing:
 		cld
 	pop di
 
@@ -115,7 +124,84 @@ pop es
 popa
 pop bp
 ret
-;============== FUNCTION END: drawCar(x,y) ===============
+;============== FUNCTION END: drawCar1(x,y) ===============
+
+
+
+;=============== FUNCTION: drawCar2(x,y) ===============
+;takes bottom left position of car
+drawCar2:
+push bp
+mov bp, sp
+pusha
+push es
+push ds
+
+	call initVidSeg
+
+	mov ax, [car2XY]	;x
+	push ax
+	mov ax, [car2XY + 2]	;y
+	push ax
+	call pointToXY
+
+	;PRINT CAR FROM LABEL
+	;ds:si to end of carDesign
+	push di
+		push cs 
+		pop ds
+		mov si, carDesign
+		sub si, 2
+		;es:di to end (bottom right) of car location on screen
+		add si, 80
+		add di, [carWidth]
+		sub di, 2
+		mov cx, [carHeight]
+		;print
+		std
+			car2PrintLoop:
+				cmp di, 4000
+				jae printCar2RowSkip
+
+				push cx
+				push di
+					mov cx, [carWidth]
+					car2PrintInner:
+						;print 
+						lodsw
+						cmp ah, [defaultCarAttrib]	;change attribute
+						jne color2ChangeSkip
+							mov ah, [car2attrib]
+						color2ChangeSkip:
+						stosw
+					loop car2PrintInner
+				pop di
+				pop cx
+
+				;WEIRD AND FANCY STUFF HAPPENING HERE
+				jmp NOprintCar2RowSkip	;if row IS printed, manual decrement of si not required, skip it
+				printCar2RowSkip:	;if row is NOT printed, manual decrement of SI is required, DO ITTT!!!
+				sub si, [carWidth]
+				sub si, [carWidth]
+				NOprintCar2RowSkip:
+				sub di, 160
+				js skipCar2Printing
+
+			loop car2PrintLoop
+
+		skipCar2Printing:
+		cld
+	pop di
+
+	
+
+pop ds
+pop es
+popa
+pop bp
+ret
+;============== FUNCTION END: drawCar2(x,y) ===============
+
 
 
 
