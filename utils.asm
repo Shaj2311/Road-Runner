@@ -10,8 +10,6 @@ mov es, ax
 mov di, 0
 pop ax
 ret
-
-%endif
 ;=========== FUNCTION END: initVidSeg() ==============
 
 
@@ -81,3 +79,5 @@ pop cx
 pop bp
 ret 2
 ;=========== FUNCTION END: delay(time) ==============
+
+%endif
