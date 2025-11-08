@@ -45,6 +45,7 @@ pusha
 
 
 
+	;draw car from memory
 	;draw car rectangle
 	mov ax, [carRectHeight]
 	push ax

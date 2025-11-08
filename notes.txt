@@ -9,3 +9,10 @@ MULTIPLY THEM BY 2
 drawVertLine()
 This function takes x POSITION as argument
 it multiplies the value by 2 on its own, no need to worry about that
+
+
+drawPlayer()
+Takes (x,y) position of MIDDLE of FRONT bumper of player's car
+
+drawCar()
+Takes (x,y) position of BOTTOM-LEFT corner of oncoming car

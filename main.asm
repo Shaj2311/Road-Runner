@@ -4,30 +4,8 @@ jmp start
 %include "player.asm"
 %include "utils.asm"
 %include "animate.asm"
-
-;THESE ARE POSITIONS AND SIZES, NOT OFFSETS
-;MULTIPLY BY 2
-roadStart: dw 20
-roadWidth: dw 40
-roadLane0: dw 0
-roadLane1: dw 0
-roadLane2: dw 0
-roadEnd: dw 0
-
-playerX: dw 0
-playerY: dw 19
-; According to these values, it appears as if
-; the height of the car is lesser than the width.
-; Visually, this is not the case, because 
-; each video block is rectangular, not square
-carWidth: dw 8
-carHeight: dw 5
-carRectWidth: dw 6
-carRectHeight: dw 5
-
-
-;screen state (without player car)
-screenState: times 2000 dw 0
+%include "labels.asm"
+%include "car.asm"
 
 
 start:
