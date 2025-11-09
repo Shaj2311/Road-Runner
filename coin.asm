@@ -11,6 +11,9 @@ push ax
 
 	;store x,y position
 	mov ax, [bp + 6]
+	mov bx, [coinWidth]
+	shr bx, 1
+	add ax, bx
 	mov [coinXY], ax
 	mov ax, [bp + 4]
 	mov [coinXY + 2], ax

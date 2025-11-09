@@ -39,9 +39,7 @@ start:
 	mov ax, [roadLane1]
 	add ax, [roadLane2]
 	shr ax, 1
-	mov bx, [coinWidth]
-	shr bx, 1
-	add ax, bx
+	inc ax
 	push ax			;x
 	push word 0		;y
 	call initCoin
@@ -85,9 +83,7 @@ start:
 			mov ax, [roadLane1]
 			add ax, [roadLane2]
 			shr ax, 1
-			mov bx, [coinWidth]
-			shr bx, 1 
-			add ax, bx
+			inc ax
 			push ax			;x
 			push word 0		;y
 			call initCoin
