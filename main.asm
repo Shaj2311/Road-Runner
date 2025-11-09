@@ -7,6 +7,7 @@ jmp start
 %include "labels.asm"
 %include "car.asm"
 %include "coin.asm"
+%include "random.asm"
 
 
 start:
