@@ -42,7 +42,7 @@ start:
 	shr bx, 1
 	add ax, bx
 	push ax			;x
-	push word 10		;y
+	push word 0		;y
 	call initCoin
 
 
@@ -79,6 +79,18 @@ start:
 			push word 0		;y
 			call initCar2
 		skipRedraw2:
+		cmp word [coinXY + 2], 30
+		jnae skipCoinRedraw
+			mov ax, [roadLane1]
+			add ax, [roadLane2]
+			shr ax, 1
+			mov bx, [coinWidth]
+			shr bx, 1 
+			add ax, bx
+			push ax			;x
+			push word 0		;y
+			call initCoin
+		skipCoinRedraw:
 
 
 		;frame delay

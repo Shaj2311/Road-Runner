@@ -68,9 +68,6 @@ push ds
 pop ds
 pop es
 
-	;reprint car
-	call drawPlayer
-
 	;draw traffic
 	call drawCar1
 	call drawCar2
@@ -81,6 +78,13 @@ pop es
 
 	;TEST COIN PRINTING
 	call drawCoin
+	;update coin position for next iteration
+	inc word [coinXY+2]
+
+
+	;reprint car
+	call drawPlayer
+
 
 
 pop di 
