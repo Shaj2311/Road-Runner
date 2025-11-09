@@ -52,7 +52,7 @@ ret 4
 
 
 
-;=============== FUNCTION: drawCar1(x,y) ===============
+;=============== FUNCTION: drawCar1() ===============
 ;takes bottom left position of car
 drawCar1:
 push bp
@@ -75,9 +75,13 @@ push ds
 		push cs 
 		pop ds
 		mov si, carDesign
+		xor ax, ax
+		mov al, [carHeight]
+		mul byte [carWidth]
+		shl ax, 1
+		add si, ax
 		sub si, 2
 		;es:di to end (bottom right) of car location on screen
-		add si, 80
 		add di, [carWidth]
 		sub di, 2
 		mov cx, [carHeight]
@@ -124,11 +128,11 @@ pop es
 popa
 pop bp
 ret
-;============== FUNCTION END: drawCar1(x,y) ===============
+;============== FUNCTION END: drawCar1() ===============
 
 
 
-;=============== FUNCTION: drawCar2(x,y) ===============
+;=============== FUNCTION: drawCar2() ===============
 ;takes bottom left position of car
 drawCar2:
 push bp
@@ -200,7 +204,7 @@ pop es
 popa
 pop bp
 ret
-;============== FUNCTION END: drawCar2(x,y) ===============
+;============== FUNCTION END: drawCar2() ===============
 
 
 
