@@ -79,6 +79,10 @@ pop es
 	inc word [car2XY+2]
 
 
+	;TEST COIN PRINTING
+	call drawCoin
+
+
 pop di 
 pop si 
 pop cx

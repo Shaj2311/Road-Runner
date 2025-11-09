@@ -6,6 +6,7 @@ jmp start
 %include "animate.asm"
 %include "labels.asm"
 %include "car.asm"
+%include "coin.asm"
 
 
 start:
@@ -32,6 +33,17 @@ start:
 	push ax			;x
 	push word 0		;y
 	call initCar2
+
+	;initialize coin TEST
+	mov ax, [roadLane1]
+	add ax, [roadLane2]
+	shr ax, 1
+	mov bx, [coinWidth]
+	shr bx, 1
+	add ax, bx
+	push ax			;x
+	push word 10		;y
+	call initCoin
 
 
 

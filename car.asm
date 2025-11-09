@@ -69,23 +69,24 @@ push ds
 	push ax
 	call pointToXY
 
-	;PRINT CAR FROM LABEL
 	;ds:si to end of carDesign
+	push cs 
+	pop ds
+	mov si, carDesign
+	xor ax, ax
+	mov al, [carHeight]
+	mul byte [carWidth]
+	shl ax, 1
+	add si, ax
+	sub si, 2
+
+	;es:di to end (bottom right) of car location on screen
+	add di, [carWidth]
+	sub di, 2
+	mov cx, [carHeight]
+
+	;PRINT CAR FROM LABEL
 	push di
-		push cs 
-		pop ds
-		mov si, carDesign
-		xor ax, ax
-		mov al, [carHeight]
-		mul byte [carWidth]
-		shl ax, 1
-		add si, ax
-		sub si, 2
-		;es:di to end (bottom right) of car location on screen
-		add di, [carWidth]
-		sub di, 2
-		mov cx, [carHeight]
-		;print
 		std
 			car1PrintLoop:
 				cmp di, 4000
