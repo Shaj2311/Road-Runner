@@ -8,6 +8,7 @@ jmp start
 %include "car.asm"
 %include "coin.asm"
 %include "random.asm"
+%include "collide.asm"
 
 
 start:
@@ -106,6 +107,30 @@ start:
 		inc byte [car1SpawnElapsed]
 		inc byte [car2SpawnElapsed]
 		inc byte [coinSpawnElapsed]
+
+		;CHECK COLLISIONS
+		;check car 1 collision 
+		sub sp, 2
+		call checkCar1Collision
+		pop ax
+		;exit if collision
+		cmp ax, 1
+		je terminate
+
+		;check car 2 collision 
+		sub sp, 2
+		call checkCar2Collision
+		pop ax
+		;exit if collision
+		cmp ax, 1
+		je terminate
+
+		;check coin collision 
+		call checkCoinCollision
+
+
+		;Print score
+		call printScore
 
 
 	jmp gameLoop

@@ -21,6 +21,7 @@ carHeight: dw 5
 carRectWidth: dw 6
 carRectHeight: dw 5
 
+playerScore: dw 0
 
 ;screen state (without player car)
 screenState: times 2000 dw 0
