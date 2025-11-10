@@ -18,11 +18,6 @@ start:
         call initPlayer
 
 
-	;initialize traffic cars
-;	mov ax, [roadLane0]
-;	add ax, [roadLane1]
-;	shr ax, 1
-;	inc ax
 	sub sp, 2	
 	call getRandomLaneX	;x
 	push word 0		;y
@@ -33,7 +28,6 @@ start:
 	push word 0		;y
 	call initCar2
 
-	;initialize coin TEST
 	sub sp, 2
 	call getRandomLaneX	;x
 	push word 0		;y
@@ -47,37 +41,47 @@ start:
 	call delay
 
 	gameLoop:
-	mov cx, 1
 
 		;scroll down + reprint animation
 		call moveScreen
 
-		;TEST
-		cmp word [car1XY + 2], 30
-		jnae skipRedraw1
-;			mov ax, [roadLane0]
-;			add ax, [roadLane1]
-;			shr ax, 1
-;			inc ax
+		mov cl, [carSpawnElapsed]
+		cmp cl, [carSpawnInterval]
+		jb carPrintSkip
+
+			;reprint car 1
 			sub sp, 2
 			call getRandomLaneX	;x
 			push word 0		;y
 			call initCar1
-		skipRedraw1:
-		cmp word [car2XY + 2], 30
-		jnae skipRedraw2
+			;reset elapsed timer
+
+			;reprint car 2
 			sub sp, 2
 			call getRandomLaneX	;x
 			push word 0		;y
 			call initCar2
-		skipRedraw2:
-		cmp word [coinXY + 2], 30
-		jnae skipCoinRedraw
+
+			;reset elapsed timer
+			mov byte [carSpawnElapsed], 0
+		carPrintSkip:
+
+
+
+
+		mov cl, [coinSpawnElapsed]
+		cmp cl, [coinSpawnInterval]
+		jb coinPrintSkip
+
+			;redraw coin
 			sub sp, 2
 			call getRandomLaneX	;x
 			push word 0		;y
 			call initCoin
-		skipCoinRedraw:
+			;reset elapsed timer
+			mov byte [coinSpawnElapsed], 0
+
+		coinPrintSkip:
 
 
 		;frame delay
@@ -85,8 +89,14 @@ start:
 		push ax
 		call delay
 
-	inc cx
-	loop gameLoop
+		;increment elapsed timers
+		inc byte [carSpawnElapsed]
+		inc byte [coinSpawnElapsed]
+
+
+	jmp gameLoop
+
+
 
         jmp terminate
 
