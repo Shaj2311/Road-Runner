@@ -45,9 +45,9 @@ start:
 		;scroll down + reprint animation
 		call moveScreen
 
-		mov cl, [carSpawnElapsed]
+		mov cl, [car1SpawnElapsed]
 		cmp cl, [carSpawnInterval]
-		jb carPrintSkip
+		jb car1PrintSkip
 
 			;reprint car 1
 			sub sp, 2
@@ -55,6 +55,12 @@ start:
 			push word 0		;y
 			call initCar1
 			;reset elapsed timer
+			mov byte [car1SpawnElapsed], 0
+		car1PrintSkip:
+
+		mov cl, [car2SpawnElapsed]
+		cmp cl, [carSpawnInterval]
+		jb car2PrintSkip
 
 			;reprint car 2
 			sub sp, 2
@@ -63,10 +69,8 @@ start:
 			call initCar2
 
 			;reset elapsed timer
-			mov byte [carSpawnElapsed], 0
-		carPrintSkip:
-
-
+			mov byte [car2SpawnElapsed], 0
+		car2PrintSkip:
 
 
 		mov cl, [coinSpawnElapsed]
@@ -90,7 +94,8 @@ start:
 		call delay
 
 		;increment elapsed timers
-		inc byte [carSpawnElapsed]
+		inc byte [car1SpawnElapsed]
+		inc byte [car2SpawnElapsed]
 		inc byte [coinSpawnElapsed]
 
 

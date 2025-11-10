@@ -57,11 +57,12 @@ coinHeight: dw 3
 randomSeed: dw 0xBEEF
 
 ;spawn intervals in frames
-carSpawnInterval: db 20
+carSpawnInterval: db 30
 coinSpawnInterval: db 50
 
 ;counters for spawn interval checking
-carSpawnElapsed: db 0
+car1SpawnElapsed: db 0
+car2SpawnElapsed: db 15
 coinSpawnElapsed: db 0
 
 %endif
