@@ -25,7 +25,7 @@ start:
 
 	sub sp, 2
 	call getRandomLaneX	;x
-	push word 0		;y
+	push word 100		;y ;CRAZY memory corruption happening here but this'll have to do for now.
 	call initCar2
 
 	sub sp, 2
@@ -58,6 +58,14 @@ start:
 			mov byte [car1SpawnElapsed], 0
 		car1PrintSkip:
 
+		;handle initial 15 frame delay before printing car 2
+		mov cl, [car2InitialDelay]
+		cmp cl, 0
+		je printCar2
+		dec byte [car2InitialDelay]
+		jmp car2PrintSkip
+
+		printCar2:
 		mov cl, [car2SpawnElapsed]
 		cmp cl, [carSpawnInterval]
 		jb car2PrintSkip

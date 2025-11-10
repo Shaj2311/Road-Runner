@@ -62,7 +62,9 @@ coinSpawnInterval: db 50
 
 ;counters for spawn interval checking
 car1SpawnElapsed: db 0
-car2SpawnElapsed: db 15
+car2SpawnElapsed: db 15		;15 frame offset so both cars are printed with a distance of 15 frames
 coinSpawnElapsed: db 0
+
+car2InitialDelay: db 15
 
 %endif
