@@ -9,6 +9,9 @@ push bp
 mov bp, sp
 push ax
 
+	;make coin visible
+	mov byte [drawCoinStatus], 1
+
 	;store x,y position
 	mov ax, [bp + 6]
 	mov bx, [coinWidth]
@@ -30,6 +33,11 @@ mov bp, sp
 pusha
 push es
 push ds
+
+	;check draw status label
+	cmp byte [drawCoinStatus], 0
+	je skipTotalCoinPrinting
+
 	;ds:si -> coin (end)
 	push cs
 	pop ds
@@ -79,6 +87,7 @@ push ds
 	pop di
 
 	
+skipTotalCoinPrinting:
 pop ds
 pop es
 popa

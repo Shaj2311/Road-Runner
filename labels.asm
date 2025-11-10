@@ -67,4 +67,9 @@ coinSpawnElapsed: db 0
 
 car2InitialDelay: db 15
 
+;boolean values
+drawCar1Status: db 0
+drawCar2Status: db 0
+drawCoinStatus: db 0
+
 %endif

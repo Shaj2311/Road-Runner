@@ -25,8 +25,9 @@ start:
 
 	sub sp, 2
 	call getRandomLaneX	;x
-	push word 100		;y ;CRAZY memory corruption happening here but this'll have to do for now.
+	push word 0		;y 
 	call initCar2
+	mov byte [drawCar2Status], 0	;hide car 2 for first iteration
 
 	sub sp, 2
 	call getRandomLaneX	;x

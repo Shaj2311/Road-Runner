@@ -9,6 +9,9 @@ push bp
 mov bp, sp
 pusha
 
+	;make car visible
+	mov byte [drawCar1Status], 1
+
 	;store x,y position (bottom left corner)
 	mov ax, [bp + 6]
 	mov [car1XY], ax	;x
@@ -32,6 +35,9 @@ initCar2:
 push bp
 mov bp, sp
 pusha
+
+	;make car visible
+	mov byte [drawCar2Status], 1
 
 	;store x,y position (bottom left corner)
 	mov ax, [bp + 6]
@@ -60,6 +66,11 @@ mov bp, sp
 pusha
 push es
 push ds
+
+	;check status label 
+	cmp byte [drawCar1Status], 0
+	je skipTotalCar1Printing
+
 
 	call initVidSeg
 
@@ -124,6 +135,7 @@ push ds
 
 	
 
+skipTotalCar1Printing:
 pop ds
 pop es
 popa
@@ -141,6 +153,10 @@ mov bp, sp
 pusha
 push es
 push ds
+
+	;check status label 
+	cmp byte [drawCar2Status], 0
+	je skipTotalCar2Printing
 
 	call initVidSeg
 
@@ -200,6 +216,7 @@ push ds
 
 	
 
+skipTotalCar2Printing:
 pop ds
 pop es
 popa
