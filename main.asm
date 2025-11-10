@@ -19,28 +19,23 @@ start:
 
 
 	;initialize traffic cars
-	mov ax, [roadLane0]
-	add ax, [roadLane1]
-	shr ax, 1
-	inc ax
-	push ax			;x
+;	mov ax, [roadLane0]
+;	add ax, [roadLane1]
+;	shr ax, 1
+;	inc ax
+	sub sp, 2	
+	call getRandomLaneX	;x
 	push word 0		;y
 	call initCar1
 
-	mov ax, [roadLane2]
-	add ax, [roadEnd]
-	shr ax, 1
-	inc ax
-	push ax			;x
+	sub sp, 2
+	call getRandomLaneX	;x
 	push word 0		;y
 	call initCar2
 
 	;initialize coin TEST
-	mov ax, [roadLane1]
-	add ax, [roadLane2]
-	shr ax, 1
-	inc ax
-	push ax			;x
+	sub sp, 2
+	call getRandomLaneX	;x
 	push word 0		;y
 	call initCoin
 
@@ -60,31 +55,26 @@ start:
 		;TEST
 		cmp word [car1XY + 2], 30
 		jnae skipRedraw1
-			mov ax, [roadLane0]
-			add ax, [roadLane1]
-			shr ax, 1
-			inc ax
-			push ax			;x
+;			mov ax, [roadLane0]
+;			add ax, [roadLane1]
+;			shr ax, 1
+;			inc ax
+			sub sp, 2
+			call getRandomLaneX	;x
 			push word 0		;y
 			call initCar1
 		skipRedraw1:
 		cmp word [car2XY + 2], 30
 		jnae skipRedraw2
-			mov ax, [roadLane2]
-			add ax, [roadEnd]
-			shr ax, 1
-			inc ax
-			push ax			;x
+			sub sp, 2
+			call getRandomLaneX	;x
 			push word 0		;y
 			call initCar2
 		skipRedraw2:
 		cmp word [coinXY + 2], 30
 		jnae skipCoinRedraw
-			mov ax, [roadLane1]
-			add ax, [roadLane2]
-			shr ax, 1
-			inc ax
-			push ax			;x
+			sub sp, 2
+			call getRandomLaneX	;x
 			push word 0		;y
 			call initCoin
 		skipCoinRedraw:

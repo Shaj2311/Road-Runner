@@ -7,7 +7,12 @@
 getRandomNumber:
 push bp
 mov bp, sp
-pusha
+push ax
+push bx
+push dx
+
+	xor dx, dx
+
 	;load seed
 	mov ax, [randomSeed]
 
@@ -36,8 +41,52 @@ pusha
 	;store random value
 	mov [bp + 6], dx
 
-popa
+pop dx
+pop bx
+pop ax
 pop bp
 ret 2
 ;======= FUNCTION END: getRandomNumber(upperBound) ========
+
+
+
+;======= FUNCTION: getRandomLaneX() ========
+getRandomLaneX:
+push bp
+mov bp, sp
+push ax
+	;get random lane number
+	sub sp, 2
+	push word 3
+	call getRandomNumber
+	pop ax
+
+	cmp ax, 1
+	jne _else_if_1_
+		mov ax, [roadLane0]
+		add ax, [roadLane1]
+		jmp _break_
+
+	_else_if_1_:
+	cmp ax, 2
+	jne _else_if_2_
+		mov ax, [roadLane1]
+		add ax, [roadLane2]
+		jmp _break_
+
+	_else_if_2_:
+	cmp ax, 3
+	jne _break_
+		mov ax, [roadLane2]
+		add ax, [roadEnd]
+		jmp _break_
+
+	_break_:
+	shr ax, 1
+	inc ax
+	mov[bp + 4], ax
+pop ax
+pop bp
+ret
+;======= FUNCTION END: getRandomLaneX() ========
 %endif
