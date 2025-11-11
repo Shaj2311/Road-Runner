@@ -32,20 +32,21 @@ pusha
 	;if car is higher than player, skip
 	mov ax, [playerY]
 	cmp [car1XY + 2], ax
-	jbe _no_collide_1_
+	jb _no_collide_1_
 
 	;if car is below player, skip
 	add ax, [carHeight]	;add height of player car
-	mov bx, [car1XY]
+	mov bx, [car1XY + 2]
 	sub bx, [carHeight]	;bx = top left of car1
 	cmp ax, bx
-	jbe _no_collide_1_
+	jb _no_collide_1_
 	
 	;check x position
 	;if playerX <= car1X and (playerX + playerWidth) >= car1X, collision
 
 	;check playerX <= car1X
 	mov ax, [playerX]
+	inc ax
 	cmp ax, [car1XY]
 	jnbe _car1_else_if_case2_
 	;potential collision, check second condition
@@ -110,20 +111,21 @@ pusha
 	;if car is higher than player, skip
 	mov ax, [playerY]
 	cmp [car2XY + 2], ax
-	jbe _no_collide_2_
+	jb _no_collide_2_
 
 	;if car is below player, skip
 	add ax, [carHeight]	;add height of player car
-	mov bx, [car2XY]
+	mov bx, [car2XY + 2]
 	sub bx, [carHeight]	;bx = top left of car2
 	cmp ax, bx
-	jbe _no_collide_2_
+	jb _no_collide_2_
 	
 	;check x position
 	;if playerX <= car2X and (playerX + playerWidth) >= car2X, collision
 
 	;check playerX <= car2X
 	mov ax, [playerX]
+	inc ax
 	cmp ax, [car2XY]
 	jnbe _car2_else_if_case2_
 	;potential collision, check second condition
@@ -184,20 +186,21 @@ pusha
 	;if car is higher than player, skip
 	mov ax, [playerY]
 	cmp [coinXY + 2], ax
-	jbe _no_collide_
+	jb _no_collide_
 
 	;if car is below player, skip
 	add ax, [carHeight]	;add height of player car
-	mov bx, [coinXY]
+	mov bx, [coinXY + 2]
 	sub bx, [carHeight]	;bx = top left of coin
 	cmp ax, bx
-	jbe _no_collide_
+	jb _no_collide_
 	
 	;check x position
 	;if playerX <= coinX and (playerX + playerWidth) >= coinX, collision
 
 	;check playerX <= coinX
 	mov ax, [playerX]
+	inc ax
 	cmp ax, [coinXY]
 	jnbe _coin_else_if_case2_
 	;potential collision, check second condition
@@ -220,9 +223,9 @@ pusha
 	jnae _no_collide_
 	;potential collision, check second condition
 
-	;check coinX+carWidth >= playerX
+	;check coinX+coinWidth >= playerX
 	mov ax, [coinXY]
-	add ax, [carWidth]
+	add ax, [coinWidth]
 	cmp ax, [playerX]
 	jnae _no_collide_
 	;collision happened
