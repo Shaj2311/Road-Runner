@@ -55,7 +55,7 @@ coinXY: dw 0,0		;bottom right corner of coin
 coinWidth: dw 5
 coinHeight: dw 3
 
-randomSeed: dw 0xBEEF
+randomSeed: dw 0xDEAD
 
 ;spawn intervals in frames
 carSpawnInterval: db 30

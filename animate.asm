@@ -1,5 +1,7 @@
 %ifndef ANIMATE_H
 %define ANIMATE_H
+%include "score.asm"
+%include "utils.asm"
 
 
 ;=========== FUNCTION: moveScreen() ==============
@@ -17,9 +19,11 @@ push ds
 	pop ds
 	mov si, screenState
 
+	call initVidSeg
 	push word 0 
 	push word 0 
 	call pointToXY
+
 
 	mov cx, 2000
 	cld
@@ -85,6 +89,9 @@ pop es
 	;reprint car
 	call drawPlayer
 
+
+	;Print score
+	call printScore
 
 
 pop di 
