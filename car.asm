@@ -4,28 +4,28 @@
 %define CAR_H
 
 ;========= FUNCTION: initCar1(x,y) =========
-;initCar1:
-;push bp
-;mov bp, sp
-;pusha
-;
-;	;make car visible
-;	mov byte [drawCar1Status], 1
-;
-;	;store x,y position (bottom left corner)
-;	mov ax, [bp + 6]
-;	mov [car1XY], ax	;x
-;	mov ax, [bp + 4]
-;	mov [car1XY + 2], ax	;y
-;
-;	;initialize attribute
-;	call setNextTrafficAttrib
-;	mov [car1attrib], ah
-;
-;
-;popa
-;pop bp
-;ret 4
+initCar1:
+push bp
+mov bp, sp
+pusha
+
+	;make car visible
+	mov byte [drawCar1Status], 1
+
+	;store x,y position (bottom left corner)
+	mov ax, [bp + 6]
+	mov [car1XY], ax	;x
+	mov ax, [bp + 4]
+	mov [car1XY + 2], ax	;y
+
+	;initialize attribute
+	call setNextTrafficAttrib
+	mov [car1attrib], ah
+
+
+popa
+pop bp
+ret 4
 ;========= FUNCTION END: initCar1(x,y) =========
 
 
