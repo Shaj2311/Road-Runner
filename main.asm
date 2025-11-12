@@ -34,6 +34,7 @@ start:
 	call getRandomLaneX	;x
 	push word 0		;y
 	call initCoin
+	mov byte [drawCoinStatus], 0	;hide coin for first iteration
 
 
 
@@ -83,6 +84,14 @@ start:
 		car2PrintSkip:
 
 
+		;handle initial 7 frame delay before printing coin
+		mov cl, [coinInitialDelay]
+		cmp cl, 0
+		je printCoin
+		dec byte [coinInitialDelay]
+		jmp coinPrintSkip
+
+		printCoin:
 		mov cl, [coinSpawnElapsed]
 		cmp cl, [coinSpawnInterval]
 		jb coinPrintSkip

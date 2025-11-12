@@ -55,18 +55,19 @@ coinXY: dw 0,0		;bottom right corner of coin
 coinWidth: dw 5
 coinHeight: dw 3
 
-randomSeed: dw 0xBEEF
+randomSeed: dw 0x1234
 
 ;spawn intervals in frames
 carSpawnInterval: db 30
-coinSpawnInterval: db 50
+coinSpawnInterval: db 60
 
 ;counters for spawn interval checking
 car1SpawnElapsed: db 0
 car2SpawnElapsed: db 15		;15 frame offset so both cars are printed with a distance of 15 frames
-coinSpawnElapsed: db 0
+coinSpawnElapsed: db 7		;similar thing for coin
 
 car2InitialDelay: db 15
+coinInitialDelay: db 7
 
 ;boolean values
 drawCar1Status: db 0
