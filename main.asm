@@ -9,6 +9,7 @@ jmp start
 %include "coin.asm"
 %include "random.asm"
 %include "collide.asm"
+%include "input.asm"
 
 
 start:
@@ -17,6 +18,7 @@ start:
         call initScene
 	call saveScreenState
         call initPlayer
+	call hookISR
 
 
 	sub sp, 2	
@@ -149,5 +151,6 @@ start:
 
 
 terminate:
+call unhookISR
 mov ax, 0x4c00
 int 0x21

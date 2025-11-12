@@ -74,4 +74,5 @@ drawCar1Status: db 0
 drawCar2Status: db 0
 drawCoinStatus: db 0
 
+oldKBisr: dw 0,0
 %endif
