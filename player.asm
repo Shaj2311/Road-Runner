@@ -15,6 +15,7 @@ pusha
 	mov ax, [roadLane1]	;x position
 	add ax, [roadLane2]
 	shr ax, 1	;divide by 2 (average)
+	sub ax, 3
 	mov [playerX], ax	;write x position of player
 
 
@@ -38,7 +39,6 @@ push ds
 	mov ax, 0xb800
 	mov es, ax
 	mov ax, [playerX]	;x position
-	sub ax, 3		;offset by 3 locations to center car
 	push ax
 	mov ax, [playerY]	;y position
 	push ax
