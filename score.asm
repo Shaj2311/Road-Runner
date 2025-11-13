@@ -15,6 +15,7 @@ mov ax, [playerScore]
 ;push number ascii on stack
 xor cx, cx
 nextDigit:
+	xor dx, dx
 	mov bx, 10
 	div bx
 	add dl, 0x30

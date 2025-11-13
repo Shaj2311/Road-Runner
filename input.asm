@@ -1,6 +1,8 @@
 %ifndef INPUT_H
 %define INPUT_H
 
+%include "labels.asm"
+
 hookISR:
 pusha
 push es
@@ -56,25 +58,41 @@ pusha
 	;	jmp _isr_ret_
 	;_not_esc_:
 
-	;a key to move left
-	cmp al, 0x1e
-	jne _not_a_
-		dec word [playerX]
+	;left arrow
+	cmp al, 0x4b
+	jne _not_left_
+		;move left if allowed
+		mov ax, [playerX]
+		mov bx, [roadLane0]
+		inc bx
+		cmp ax, bx
+		jna _move_left_skip_
+			dec word [playerX]
+		_move_left_skip_:
 		jmp _isr_ret_
-	_not_a_:
+	_not_left_:
 
-	;d key to move right
-	cmp al, 0x20
-	jne _not_right_
+	;right arrow
+	cmp al, 0x4d
+	jne _not_d_
+		mov ax, [playerX]
+		add ax, [carWidth]
+		mov bx, [roadEnd]
+		cmp ax, bx
+		jnb _move_right_skip_
 		inc word [playerX]
+		_move_right_skip_:
 		jmp _isr_ret_
-	_not_right_:
+	_not_d_:
+
+	
 
 _isr_ret_:
 	;return EOI signal to port 0x20
-	mov ax, 0x20
-	out 0x20, ax
+;	mov ax, 0x20
+;	out 0x20, ax
 popa
-iret
+jmp far [cs:oldKBisr]
+;iret
 
 %endif

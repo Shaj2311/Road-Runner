@@ -240,12 +240,12 @@ pusha
 	collisionCoin:
 	;if collision,
 		;increment score
-		cmp word [drawCoinStatus], 1
+		cmp byte [drawCoinStatus], 1
 		jne _skip_score_increment_
 		inc word [playerScore]
 		_skip_score_increment_:
 		;hide car 
-		mov word [drawCoinStatus], 0 
+		mov byte [drawCoinStatus], 0 
 		;return 2 
 		mov word [bp + 4], 1
 
