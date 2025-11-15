@@ -14,6 +14,9 @@ pusha
 
 	;store x,y position (bottom left corner)
 	mov ax, [bp + 6]
+	mov bx, [carWidth]
+	shr bx, 1
+	sub ax, bx
 	mov [car1XY], ax	;x
 	mov ax, [bp + 4]
 	mov [car1XY + 2], ax	;y
@@ -41,6 +44,9 @@ pusha
 
 	;store x,y position (bottom left corner)
 	mov ax, [bp + 6]
+	mov bx, [carWidth]
+	shr bx, 1
+	sub ax, bx
 	mov [car2XY], ax	;x
 	mov ax, [bp + 4]
 	mov [car2XY + 2], ax	;y
@@ -72,14 +78,6 @@ push ds
 	je skipTotalCar1Printing
 
 
-	call initVidSeg
-
-	mov ax, [car1XY]	;x
-	push ax
-	mov ax, [car1XY + 2]	;y
-	push ax
-	call pointToXY
-
 	;ds:si to end of carDesign
 	push cs 
 	pop ds
@@ -92,7 +90,17 @@ push ds
 	sub si, 2
 
 	;es:di to end (bottom right) of car location on screen
-	add di, [carWidth]
+	call initVidSeg
+
+	mov ax, [car1XY]	;x
+	push ax
+	mov ax, [car1XY + 2]	;y
+	push ax
+	call pointToXY
+
+	mov bx, [carWidth]
+	shl bx, 1
+	add di, bx
 	sub di, 2
 	mov cx, [carHeight]
 
@@ -158,6 +166,19 @@ push ds
 	cmp byte [drawCar2Status], 0
 	je skipTotalCar2Printing
 
+
+	;ds:si to end of carDesign
+	push cs 
+	pop ds
+	mov si, carDesign
+	xor ax, ax
+	mov al, [carHeight]
+	mul byte [carWidth]
+	shl ax, 1
+	add si, ax
+	sub si, 2
+
+	;es:di to end (bottom right) of car location on screen
 	call initVidSeg
 
 	mov ax, [car2XY]	;x
@@ -166,19 +187,14 @@ push ds
 	push ax
 	call pointToXY
 
+	mov bx, [carWidth]
+	shl bx, 1
+	add di, bx
+	sub di, 2
+	mov cx, [carHeight]
+
 	;PRINT CAR FROM LABEL
-	;ds:si to end of carDesign
 	push di
-		push cs 
-		pop ds
-		mov si, carDesign
-		sub si, 2
-		;es:di to end (bottom right) of car location on screen
-		add si, 80
-		add di, [carWidth]
-		sub di, 2
-		mov cx, [carHeight]
-		;print
 		std
 			car2PrintLoop:
 				cmp di, 4000

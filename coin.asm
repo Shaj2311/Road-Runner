@@ -16,7 +16,7 @@ push ax
 	mov ax, [bp + 6]
 	mov bx, [coinWidth]
 	shr bx, 1
-	add ax, bx
+	sub ax, bx
 	mov [coinXY], ax
 	mov ax, [bp + 4]
 	mov [coinXY + 2], ax
@@ -51,7 +51,11 @@ push ds
 	
 	;es:di -> video x,y (bottom right end)
 	call initVidSeg
-	push word [coinXY]
+	mov ax, [coinXY]
+	mov bx, [coinWidth]
+	add ax, bx
+	dec ax
+	push word ax
 	push word [coinXY+2]
 	call pointToXY
 	
