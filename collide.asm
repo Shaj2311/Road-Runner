@@ -25,8 +25,12 @@ pusha
 	jbe car1CollRet
 	
 	;check x position
-	;if playerX <= car1X and (playerX + playerWidth) >= car1X, collision
+	;if playerX == car1X, collision
+	mov ax, [playerX]
+	cmp ax, [car1XY]
+	je collisionCar1
 
+	;if playerX <= car1X and (playerX + playerWidth) >= car1X, collision
 	;check playerX <= car1X
 	mov ax, [playerX]
 	cmp ax, [car1XY]
@@ -98,8 +102,12 @@ pusha
 	jbe car1CollRet
 	
 	;check x position
-	;if playerX <= car2X and (playerX + playerWidth) >= car2X, collision
+	;if playerX == car2X, collision
+	mov ax, [playerX]
+	cmp ax, [car2XY]
+	je collisionCar2
 
+	;if playerX <= car2X and (playerX + playerWidth) >= car2X, collision
 	;check playerX <= car2X
 	mov ax, [playerX]
 	cmp ax, [car2XY]
