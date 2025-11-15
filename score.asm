@@ -1,9 +1,7 @@
 %ifndef SCORE_H
 %define SCORE_H
 
-scoreStr: db 'Score: '
-scoreAmountStr: dw 0
-scoreStrSize: db scoreStrSize - scoreStr
+%include "labels.asm"
 
 printScore:
 pusha

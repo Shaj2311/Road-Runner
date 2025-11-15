@@ -206,7 +206,7 @@ pusha
 		;increment score
 		cmp byte [drawCoinStatus], 1
 		jne _skip_score_increment_
-		inc word [playerScore]
+		add word [playerScore], 5
 		_skip_score_increment_:
 		;hide coin
 		mov byte [drawCoinStatus], 0 

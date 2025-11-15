@@ -66,6 +66,8 @@ start:
 			call initCar1
 			;reset elapsed timer
 			mov byte [car1SpawnElapsed], 0
+			;increment score
+			inc word [playerScore]
 		car1PrintSkip:
 
 		;handle initial 15 frame delay before printing car 2
@@ -85,6 +87,8 @@ start:
 			call getRandomLaneX	;x
 			push word 0		;y
 			call initCar2
+			;increment score
+			inc word [playerScore]
 
 			;reset elapsed timer
 			mov byte [car2SpawnElapsed], 0

@@ -77,4 +77,9 @@ drawCoinStatus: db 0
 oldKBisr: dw 0,0
 
 gameIsRunning: db 0
+
+scoreStr: db 'Score: '
+scoreAmountStr: dw 0
+scoreStrSize: db scoreStrSize - scoreStr
+
 %endif
