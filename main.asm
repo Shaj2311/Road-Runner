@@ -39,6 +39,10 @@ start:
 	mov byte [drawCoinStatus], 0	;hide coin for first iteration
 
 
+	;set game running flag
+	mov byte [gameIsRunning], 1
+
+
 
 
 	mov ax, 100
@@ -46,6 +50,7 @@ start:
 	call delay
 
 	gameLoop:
+		
 
 		;scroll down + reprint animation
 		call moveScreen
@@ -109,6 +114,11 @@ start:
 		coinPrintSkip:
 
 
+		;quit if game ended
+		cmp byte [gameIsRunning], 0
+		je near terminate
+
+
 		;frame delay
 		mov ax, 5
 		push ax
@@ -120,21 +130,12 @@ start:
 		inc byte [coinSpawnElapsed]
 
 		;CHECK COLLISIONS
+
 		;check car 1 collision 
-		sub sp, 2
 		call checkCar1Collision
-		pop ax
-		;exit if collision
-		cmp ax, 1
-		je terminate
 
 		;check car 2 collision 
-		sub sp, 2
 		call checkCar2Collision
-		pop ax
-		;exit if collision
-		cmp ax, 1
-		je terminate
 
 		;check coin collision 
 		call checkCoinCollision

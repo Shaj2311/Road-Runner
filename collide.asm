@@ -32,14 +32,14 @@ pusha
 	;if car is higher than player, skip
 	mov ax, [playerY]
 	cmp [car1XY + 2], ax
-	jb _no_collide_1_
+	jb car1CollRet
 
 	;if car is below player, skip
 	add ax, [carHeight]	;add height of player car
 	mov bx, [car1XY + 2]
 	sub bx, [carHeight]	;bx = top left of car1
 	cmp ax, bx
-	jb _no_collide_1_
+	jb car1CollRet
 	
 	;check x position
 	;if playerX <= car1X and (playerX + playerWidth) >= car1X, collision
@@ -66,29 +66,21 @@ pusha
 	;check playerX >= car1X
 	mov ax, [playerX]
 	cmp ax, [car1XY]
-	jnae _no_collide_1_
+	jnae car1CollRet
 	;potential collision, check second condition
 
 	;check car1X+carWidth >= playerX
 	mov ax, [car1XY]
 	add ax, [carWidth]
 	cmp ax, [playerX]
-	jnae _no_collide_1_
+	jnae car1CollRet
 	;collision happened
-
-
-	_no_collide_1_:
-	;return 0
-	mov word [bp + 4], 0
-	jmp car1CollRet
 
 
 	collisionCar1:
 	;if collision,
-		;hide car 
-		mov word [drawCar1Status], 0 
-		;return 1 
-		mov word [bp + 4], 1
+		;terminate program
+		mov byte [gameIsRunning], 0
 
 car1CollRet:
 popa
@@ -111,14 +103,14 @@ pusha
 	;if car is higher than player, skip
 	mov ax, [playerY]
 	cmp [car2XY + 2], ax
-	jb _no_collide_2_
+	jb car2CollRet
 
 	;if car is below player, skip
 	add ax, [carHeight]	;add height of player car
 	mov bx, [car2XY + 2]
 	sub bx, [carHeight]	;bx = top left of car2
 	cmp ax, bx
-	jb _no_collide_2_
+	jb car2CollRet
 	
 	;check x position
 	;if playerX <= car2X and (playerX + playerWidth) >= car2X, collision
@@ -145,29 +137,22 @@ pusha
 	;check playerX >= car2X
 	mov ax, [playerX]
 	cmp ax, [car2XY]
-	jnae _no_collide_2_
+	jnae car2CollRet
 	;potential collision, check second condition
 
 	;check car2X+carWidth >= playerX
 	mov ax, [car2XY]
 	add ax, [carWidth]
 	cmp ax, [playerX]
-	jnae _no_collide_2_
+	jnae car2CollRet
 	;collision happened
 
-
-	_no_collide_2_:
-	;return 0
-	mov word [bp + 4], 0
-	jmp car2CollRet
 
 
 	collisionCar2:
 	;if collision,
-		;hide car 
-		mov word [drawCar2Status], 0 
-		;return 2 
-		mov word [bp + 4], 1
+		;terminate program
+		mov byte [gameIsRunning], 0
 
 car2CollRet:
 popa
@@ -186,14 +171,14 @@ pusha
 	;if car is higher than player, skip
 	mov ax, [playerY]
 	cmp [coinXY + 2], ax
-	jb _no_collide_
+	jb coinCollRet
 
 	;if car is below player, skip
 	add ax, [carHeight]	;add height of player car
 	mov bx, [coinXY + 2]
 	sub bx, [carHeight]	;bx = top left of coin
 	cmp ax, bx
-	jb _no_collide_
+	jb coinCollRet
 	
 	;check x position
 	;if playerX <= coinX and (playerX + playerWidth) >= coinX, collision
@@ -220,21 +205,17 @@ pusha
 	;check playerX >= coinX
 	mov ax, [playerX]
 	cmp ax, [coinXY]
-	jnae _no_collide_
+	jnae coinCollRet
 	;potential collision, check second condition
 
 	;check coinX+coinWidth >= playerX
 	mov ax, [coinXY]
 	add ax, [coinWidth]
 	cmp ax, [playerX]
-	jnae _no_collide_
+	jnae coinCollRet
 	;collision happened
 
 
-	_no_collide_:
-	;return 0
-	mov word [bp + 4], 0
-	jmp coinCollRet
 
 
 	collisionCoin:
@@ -244,10 +225,8 @@ pusha
 		jne _skip_score_increment_
 		inc word [playerScore]
 		_skip_score_increment_:
-		;hide car 
+		;hide coin
 		mov byte [drawCoinStatus], 0 
-		;return 2 
-		mov word [bp + 4], 1
 
 coinCollRet:
 popa

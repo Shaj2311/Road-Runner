@@ -51,12 +51,13 @@ pusha
 	;get input scan code
 	in al, 0x60
 
-	;;escape to quit
-	;cmp al, 0x01
-	;jne _not_esc_
-	;	;terminate program
-	;	jmp _isr_ret_
-	;_not_esc_:
+	;escape to quit
+	cmp al, 0x01
+	jne _not_esc_
+		;terminate program
+		mov byte [gameIsRunning], 0
+		jmp _isr_ret_
+	_not_esc_:
 
 	;left arrow
 	cmp al, 0x4b
