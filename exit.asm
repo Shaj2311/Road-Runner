@@ -59,6 +59,19 @@ pusha
 	push word 15
 	call printScore
 
+	;print exit prompt
+	mov ah, 0x13
+	mov al, 0
+	xor bh, bh 
+	mov bl, 0x87
+	mov cx, [exitPromptStrLen]
+	mov dh, 17
+	mov dl, 31
+	push cs
+	pop es 
+	mov bp, exitPromptStr
+	int 0x10
+
 
 popa 
 ret

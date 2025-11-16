@@ -112,5 +112,7 @@ exitMessageStr: db "GAME OVER"
 exitMessageStrLen: dw exitMessageStrLen - exitMessageStr
 exitScoreStr: db "Your Score: "
 exitScoreStrLen: dw exitScoreStrLen - exitScoreStr
+exitPromptStr: db "Play Again? (Y/N)"
+exitPromptStrLen: dw exitPromptStrLen - exitPromptStr
 
 %endif
