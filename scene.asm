@@ -264,4 +264,37 @@ ret 4
 ;=========== FUNCTION END: initScene() HELPERS: initVidSeg(), initBG, initTrees(), drawTree(), initRoad(), drawVertLine(), drawLane()  ==============
 
 
+
+;=========== FUNCTION: printInstructions() ==============
+printInstructions:
+pusha 
+	;print instructions
+	mov ah, 0x13
+	xor al, al
+	xor bh, bh
+	mov bl, 0x07
+	mov cx, [instructionStr1Len]
+	mov dh, 15
+	mov dl, 27
+	push cs
+	pop es
+	mov bp, instructionStr1
+	int 0x10
+
+	;print instructions
+	mov ah, 0x13
+	xor al, al
+	xor bh, bh
+	mov bl, 0x07
+	mov cx, [instructionStr2Len]
+	mov dh, 16
+	mov dl, 31
+	push cs
+	pop es
+	mov bp, instructionStr2
+	int 0x10
+popa 
+ret
+;=========== FUNCTION END: printInstructions() ==============
+
 %endif

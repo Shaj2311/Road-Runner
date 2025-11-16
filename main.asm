@@ -16,21 +16,20 @@ jmp start
 
 
 start:
-
+	call hookISR
+        call initRoadValues
+restart:
 	call clrscr
 	push word 10 
 	call delay		;slight delay to ignore .com launch input
-	call hookISR
 	call printIntro
 	call waitForStart
 
-        call initRoadValues
         call clrscr
         call initScene
 	call saveScreenState
         call initPlayer
-
-
+	call printInstructions
 	sub sp, 2	
 	call getRandomLaneX	;x
 	push word 0		;y
@@ -55,7 +54,7 @@ start:
 
 
 
-	mov ax, 100
+	mov ax, 150
 	push ax
 	call delay
 
@@ -132,7 +131,7 @@ start:
 
 		;quit if game ended
 		cmp byte [gameIsRunning], 0
-		je near terminate
+		je near gameOver
 
 
 		;frame delay
@@ -162,13 +161,28 @@ start:
 
 
 
-        jmp terminate
+        jmp gameOver
+
+
+
+
+gameOver:
+mov byte [gameEnded], 1
+call printExitScreen
+exitLoop:
+	cmp byte [exitGame], 1 
+	je terminate
+	cmp byte [restartGame], 1
+	jne exitLoop
+		call resetFlags
+		jmp restart
+jmp exitLoop
 
 
 
 
 terminate:
-call printExitScreen
 call unhookISR
+call clrscr
 mov ax, 0x4c00
 int 0x21

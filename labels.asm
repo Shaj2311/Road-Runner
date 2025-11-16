@@ -55,7 +55,7 @@ coinXY: dw 0,0		;bottom right corner of coin
 coinWidth: dw 5
 coinHeight: dw 3
 
-randomSeed: dw 0x1234
+randomSeed: dw 0xBEEF
 
 ;spawn intervals in frames
 carSpawnInterval: db 30
@@ -80,7 +80,7 @@ gameIsRunning: db 0
 
 scoreStr: db 'Score: '
 scoreAmountStr: dw 0, 0, 0, 0, 0
-scoreStrSize: db scoreStrSize - scoreStr
+scoreStrSize: dw scoreStrSize - scoreStr
 
 isIntro: db 0
 
@@ -102,6 +102,10 @@ sectionStrLen: 	dw sectionStrLen - sectionStr
 introPromptStr: db "Press Any Key To Continue"
 introPromptStrLen: dw introPromptStrLen - introPromptStr
 
+instructionStr1: db "ARROW KEYS: MOVE LEFT/RIGHT"
+instructionStr1Len: dw instructionStr1Len - instructionStr1
+instructionStr2: db "ESCAPE: PAUSE/QUIT"
+instructionStr2Len: dw instructionStr2Len - instructionStr2
 
 gamePaused: db 0
 
@@ -114,5 +118,45 @@ exitScoreStr: db "Your Score: "
 exitScoreStrLen: dw exitScoreStrLen - exitScoreStr
 exitPromptStr: db "Play Again? (Y/N)"
 exitPromptStrLen: dw exitPromptStrLen - exitPromptStr
+
+gameEnded: db 0
+exitGame: db 0
+restartGame: db 0
+
+
+resetFlags:
+push ax
+	;reset score
+	mov word [playerScore], 0
+
+	;reset score string
+	mov word [scoreAmountStr], 0
+	mov word [scoreAmountStr + 2], 0
+	mov word [scoreAmountStr + 4], 0
+	mov word [scoreAmountStr + 6], 0
+	mov word [scoreAmountStr + 8], 0
+	xor ax, ax
+	mov ax, scoreStrSize
+	sub ax, scoreStr
+	mov [scoreStrSize], ax
+	
+	;spawn timers
+	mov byte [car1SpawnElapsed], 0
+	mov byte [car2SpawnElapsed], 15
+	mov byte [coinSpawnElapsed], 7
+
+	mov byte [drawCar1Status], 0
+	mov byte [drawCar2Status], 0
+	mov byte [drawCoinStatus], 0
+
+	mov byte [gameIsRunning], 0
+	mov byte [isIntro], 0
+	mov byte [gamePaused], 0
+	mov byte [gameEnded], 0 
+
+	mov byte [exitGame], 0
+	mov byte [restartGame], 0
+pop ax
+ret
 
 %endif

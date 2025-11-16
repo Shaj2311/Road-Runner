@@ -64,11 +64,12 @@ pusha
 	jne _game_not_paused_
 		;quit if y
 		cmp al, 0x15
-		jne _not_y_
+		jne _pause_not_y_
 			mov byte [gameIsRunning], 0
 			mov byte [gamePaused], 0
+			call clrscr
 			jmp _isr_ret_
-		_not_y_:
+		_pause_not_y_:
 
 		;resume if n
 		cmp al, 0x31
@@ -76,6 +77,24 @@ pusha
 			mov byte [gamePaused], 0
 			jmp _isr_ret_
 	_game_not_paused_:
+
+	;Exit screen (press y to restart, n to exit)
+	cmp byte [gameEnded], 1
+	jne _game_not_ended_
+
+		cmp al, 0x15
+		jne _exit_not_y_
+			;restart game
+			mov byte [restartGame], 1
+			jmp _isr_ret_
+		_exit_not_y_:
+		cmp al, 0x31
+		jne _isr_ret_
+			;exit game
+			mov byte [exitGame], 1
+			jmp _isr_ret_
+	_game_not_ended_:
+
 
 
 	;escape to pause
@@ -123,7 +142,6 @@ _isr_ret_:
 mov ax, 0x20
 out 0x20, ax
 popa
-;jmp far [cs:oldKBisr]
 iret
 
 %endif

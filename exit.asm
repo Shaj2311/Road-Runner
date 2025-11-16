@@ -63,7 +63,7 @@ pusha
 	mov ah, 0x13
 	mov al, 0
 	xor bh, bh 
-	mov bl, 0x87
+	mov bl, 0x07
 	mov cx, [exitPromptStrLen]
 	mov dh, 17
 	mov dl, 31

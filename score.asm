@@ -49,8 +49,7 @@ xor bh, bh		;page 0
 mov dh, [bp + 4] 		;row
 mov dl, [bp + 6]		;column
 ;cx = string length
-xor ch, ch
-mov cl, [scoreStrSize]
+mov cx, [scoreStrSize]
 ;es:bp = start of string
 push cs
 pop es
