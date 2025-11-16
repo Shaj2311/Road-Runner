@@ -91,6 +91,9 @@ pop es
 
 
 	;Print score
+	push word 00100000b
+	push word 1
+	push word 1
 	call printScore
 
 

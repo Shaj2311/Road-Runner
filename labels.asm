@@ -108,4 +108,9 @@ gamePaused: db 0
 pausedMessageStr: 	db "Are you sure you want to quit? (Y/N)"
 pausedMessageStrLen: 	dw pausedMessageStrLen - pausedMessageStr
 
+exitMessageStr: db "GAME OVER"
+exitMessageStrLen: dw exitMessageStrLen - exitMessageStr
+exitScoreStr: db "Your Score: "
+exitScoreStrLen: dw exitScoreStrLen - exitScoreStr
+
 %endif

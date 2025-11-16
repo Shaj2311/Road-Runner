@@ -12,6 +12,7 @@ jmp start
 %include "input.asm"
 %include "intro.asm"
 %include "pause.asm"
+%include "exit.asm"
 
 
 start:
@@ -167,6 +168,7 @@ start:
 
 
 terminate:
+call printExitScreen
 call unhookISR
 mov ax, 0x4c00
 int 0x21

@@ -4,6 +4,8 @@
 %include "labels.asm"
 
 printScore:
+push bp
+mov bp, sp
 pusha
 push es
 
@@ -40,12 +42,12 @@ loop popNextDigit
 ;al = mode
 mov al, 00b		;do not move cursor, no alternating attributes
 ;bl = attribute
-mov bl, 00100000b	;black on green
+mov bl, [bp + 8]	;attribute
 ;bh = page number
 xor bh, bh		;page 0
 ;dh,dl = row, column
-mov dh, 1 		;row 1
-mov dl, 0		;column 0
+mov dh, [bp + 4] 		;row
+mov dl, [bp + 6]		;column
 ;cx = string length
 xor ch, ch
 mov cl, [scoreStrSize]
@@ -61,6 +63,7 @@ int 0x10
 
 pop es
 popa
-ret
+pop bp
+ret 6
 
 %endif
