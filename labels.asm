@@ -92,6 +92,14 @@ db "|  __ \ / __ \   /\   |  __ \|  __ \| |  | | \ | | \ | |  ____|  __ \ ",
 db "| |__) | |  | | /  \  | |  | | |__) | |  | |  \| |  \| | |__  | |__) |",
 db "|  _  /| |  | |/ /\ \ | |  | |  _  /| |  | | . ` | . ` |  __| |  _  / ",
 db "| | \ \| |__| / ____ \| |__| | | \ \| |__| | |\  | |\  | |____| | \ \ ",
-db "|_|  \_\\____/_/    \_\_____/|_|  \_\\____/|_| \_|_| \_|______|_|  \_\"
+db "|_|  \_\\____/_/    \_\_____/|_|  \_\\____/|_| \_|_| \_|______|_|  \_\ "
+nameStr:	db "Name: Haider Ali"
+nameStrLen: 	dw nameStrLen - nameStr
+rollNoStr:	db "Roll Number: 24L-0882"
+rollNoStrLen: 	dw rollNoStrLen - rollNoStr
+sectionStr:	db "Section: BCS-5A"
+sectionStrLen: 	dw sectionStrLen - sectionStr
+introPromptStr: db "Press Any Key To Continue"
+introPromptStrLen: dw introPromptStrLen - introPromptStr
 
 %endif
