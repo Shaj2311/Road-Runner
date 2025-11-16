@@ -178,7 +178,7 @@ pusha
 	mov ax, [playerX]
 	;inc ax
 	cmp ax, [coinXY]
-	jnb _coin_else_if_case2_
+	jnbe _coin_else_if_case2_
 	;potential collision, check second condition
 
 	;check playerX+playerWidth >= coinX
