@@ -11,6 +11,7 @@ jmp start
 %include "collide.asm"
 %include "input.asm"
 %include "intro.asm"
+%include "pause.asm"
 
 
 start:
@@ -59,6 +60,8 @@ start:
 
 	gameLoop:
 		
+		cmp byte [gamePaused], 1 
+		je gameLoop
 
 		;scroll down + reprint animation
 		call moveScreen

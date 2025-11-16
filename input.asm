@@ -53,17 +53,39 @@ pusha
 
 	;Intro screen (press any key to continue)
 	cmp byte [isIntro], 1
-	jne notIntro
+	jne _not_intro_
 	;If key pressed at intro, start game
 	mov byte [isIntro], 0
+	jmp _isr_ret_
+	_not_intro_:
+
+	;Pause screen (press y to quit, n to resume)
+	cmp byte [gamePaused], 1
+	jne _game_not_paused_
+		;quit if y
+		cmp al, 0x15
+		jne _not_y_
+			mov byte [gameIsRunning], 0
+			mov byte [gamePaused], 0
+			jmp _isr_ret_
+		_not_y_:
+
+		;resume if n
+		cmp al, 0x31
+		jne _isr_ret_
+			mov byte [gamePaused], 0
+			jmp _isr_ret_
+	_game_not_paused_:
 
 
-	notIntro:
-	;escape to quit
+	;escape to pause
 	cmp al, 0x01
 	jne _not_esc_
-		;terminate program
-		mov byte [gameIsRunning], 0
+		;pause game
+		mov byte [gamePaused], 1
+		;print pause menu
+		call clrscr
+		call printPauseMenu
 		jmp _isr_ret_
 	_not_esc_:
 

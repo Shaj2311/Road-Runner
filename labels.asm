@@ -102,4 +102,10 @@ sectionStrLen: 	dw sectionStrLen - sectionStr
 introPromptStr: db "Press Any Key To Continue"
 introPromptStrLen: dw introPromptStrLen - introPromptStr
 
+
+gamePaused: db 0
+
+pausedMessageStr: 	db "Are you sure you want to quit? (Y/N)"
+pausedMessageStrLen: 	dw pausedMessageStrLen - pausedMessageStr
+
 %endif
