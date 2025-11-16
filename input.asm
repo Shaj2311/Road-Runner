@@ -89,11 +89,11 @@ pusha
 	
 
 _isr_ret_:
-	;return EOI signal to port 0x20
-;	mov ax, 0x20
-;	out 0x20, ax
+;return EOI signal to port 0x20
+mov ax, 0x20
+out 0x20, ax
 popa
-jmp far [cs:oldKBisr]
-;iret
+;jmp far [cs:oldKBisr]
+iret
 
 %endif
