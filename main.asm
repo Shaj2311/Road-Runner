@@ -10,15 +10,23 @@ jmp start
 %include "random.asm"
 %include "collide.asm"
 %include "input.asm"
+%include "intro.asm"
 
 
 start:
+
+	call clrscr
+	push word 10 
+	call delay		;slight delay to ignore .com launch input
+	call hookISR
+	call printIntro
+	call waitForStart
+
         call initRoadValues
         call clrscr
         call initScene
 	call saveScreenState
         call initPlayer
-	call hookISR
 
 
 	sub sp, 2	

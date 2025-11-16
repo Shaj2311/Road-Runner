@@ -51,6 +51,14 @@ pusha
 	;get input scan code
 	in al, 0x60
 
+	;Intro screen (press any key to continue)
+	cmp byte [isIntro], 1
+	jne notIntro
+	;If key pressed at intro, start game
+	mov byte [isIntro], 0
+
+
+	notIntro:
 	;escape to quit
 	cmp al, 0x01
 	jne _not_esc_
