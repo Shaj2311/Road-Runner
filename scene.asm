@@ -268,6 +268,7 @@ ret 4
 ;=========== FUNCTION: printInstructions() ==============
 printInstructions:
 pusha 
+push es
 	;print instructions
 	mov ah, 0x13
 	xor al, al
@@ -282,17 +283,12 @@ pusha
 	int 0x10
 
 	;print instructions
-	mov ah, 0x13
-	xor al, al
-	xor bh, bh
-	mov bl, 0x07
 	mov cx, [instructionStr2Len]
 	mov dh, 16
 	mov dl, 31
-	push cs
-	pop es
 	mov bp, instructionStr2
 	int 0x10
+pop es
 popa 
 ret
 ;=========== FUNCTION END: printInstructions() ==============
