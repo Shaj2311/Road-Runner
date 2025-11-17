@@ -123,6 +123,11 @@ gameEnded: db 0
 exitGame: db 0
 restartGame: db 0
 
+timerToggle: db 0
+oldTimerISR: dw 0, 0
+;timerHooked: db 0
+
+
 
 resetFlags:
 push ax
