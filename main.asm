@@ -57,7 +57,9 @@ restart:
 
 	mov ax, 150
 	push ax
+	cli
 	call delay
+	sti
 
 	;TESTTTTT
 	call hookTimerISR

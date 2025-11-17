@@ -33,6 +33,7 @@ iret
 unhookTimerISR:
 pusha
 push es
+
 	xor ax, ax
 	mov es, ax
 
@@ -42,8 +43,8 @@ push es
 		mov ax, [cs:oldTimerISR + 2]
 		mov [es:8*4 + 2], ax
 	sti
+	
 
-	;mov byte [timerHooked], 0
 pop es
 popa
 ret
@@ -52,6 +53,7 @@ ret
 
 hookTimerISR:
 pusha
+
 	;store old timer isr
 	xor ax, ax
 	mov es, ax
@@ -67,7 +69,6 @@ pusha
 	mov word [es:8*4 + 2], cs
 	sti
 
-	;mov byte [timerHooked], 1
 popa
 ret
 %endif
