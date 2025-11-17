@@ -61,7 +61,6 @@ restart:
 	call delay
 	sti
 
-	;TESTTTTT
 	call hookTimerISR
 
 	gameLoop:
