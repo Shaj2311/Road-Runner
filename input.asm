@@ -74,6 +74,9 @@ pusha
 		;resume if n
 		cmp al, 0x31
 		jne _isr_ret_
+			;rehook timer 
+			call hookTimerISR
+			;resume game
 			mov byte [gamePaused], 0
 			jmp _isr_ret_
 	_game_not_paused_:
@@ -102,6 +105,11 @@ pusha
 	jne _not_esc_
 		;pause game
 		mov byte [gamePaused], 1
+	;	;unhook timer (if hooked)
+	;	cmp byte [timerHooked], 1
+	;	jne _skip_unhooking_
+		call unhookTimerISR
+		_skip_unhooking_:
 		;print pause menu
 		call clrscr
 		call printPauseMenu
