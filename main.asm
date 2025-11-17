@@ -14,6 +14,41 @@ jmp start
 %include "pause.asm"
 %include "exit.asm"
 
+timerISR:
+pusha 
+push ds
+	push cs
+	pop ds
+	call moveScreen
+;	jmp gameLoop
+;	timerRet:
+	;send eoi
+	mov al, 0x20
+	out 0x20, al
+pop ds
+popa
+iret
+
+oldTimerISR: dw 0, 0
+
+hookTimerISR:
+pusha
+	;store old isr
+	xor ax, ax
+	mov es, ax
+	mov ax, [es:8*4]
+	mov [oldTimerISR], ax
+	mov ax, [es:8*4 + 2]
+	mov [oldTimerISR + 2], ax
+
+	;hook new isr
+	cli 
+	mov ax, timerISR
+	mov word [es:8*4], timerISR
+	mov word [es:8*4 + 2], cs
+	sti
+popa
+ret
 
 start:
 	call hookISR
@@ -58,13 +93,16 @@ restart:
 	push ax
 	call delay
 
+	;TESTTTTT
+	call hookTimerISR
+
 	gameLoop:
 		
 		cmp byte [gamePaused], 1 
 		je gameLoop
 
 		;scroll down + reprint animation
-		call moveScreen
+		;call moveScreen
 
 		mov cl, [car1SpawnElapsed]
 		cmp cl, [carSpawnInterval]
@@ -161,7 +199,7 @@ restart:
 
 
 
-        jmp gameOver
+        ;jmp gameOver
 
 
 
