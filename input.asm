@@ -46,6 +46,37 @@ popa
 ret
 
 
+
+getPausedInput:
+pusha
+
+	;get input 
+	mov ah, 0 
+	int 0x16
+
+	;quit if y
+	cmp al, 'y'
+	jne _pause_not_y_
+		mov byte [gameIsRunning], 0
+		mov byte [gamePaused], 0
+		call clrscr
+		popa
+		ret
+	_pause_not_y_:
+
+	;resume if n
+	cmp al, 'n'
+	jne _get_input_ret_
+		;rehook timer 
+		call hookTimerISR
+		;resume game
+		mov byte [gamePaused], 0
+		popa
+		ret
+_get_input_ret_:
+popa
+ret
+
 kbISR:
 pusha
 	;get input scan code

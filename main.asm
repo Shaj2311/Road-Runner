@@ -66,7 +66,12 @@ restart:
 	gameLoop:
 		
 		cmp byte [gamePaused], 1 
-		je gameLoop
+		jne _not_paused_
+		;if paused, wait for user input (Y/N)
+			call getPausedInput
+			jmp gameLoop
+		_not_paused_:
+;		je gameLoop
 
 		;scroll down + reprint animation
 		;call moveScreen
