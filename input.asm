@@ -59,27 +59,27 @@ pusha
 	jmp _isr_ret_
 	_not_intro_:
 
-	;Pause screen (press y to quit, n to resume)
-	cmp byte [gamePaused], 1
-	jne _game_not_paused_
-		;quit if y
-		cmp al, 0x15
-		jne _pause_not_y_
-			mov byte [gameIsRunning], 0
-			mov byte [gamePaused], 0
-			call clrscr
-			jmp _isr_ret_
-		_pause_not_y_:
-
-		;resume if n
-		cmp al, 0x31
-		jne _isr_ret_
-			;rehook timer 
-			call hookTimerISR
-			;resume game
-			mov byte [gamePaused], 0
-			jmp _isr_ret_
-	_game_not_paused_:
+;	;Pause screen (press y to quit, n to resume)
+;	cmp byte [gamePaused], 1
+;	jne _game_not_paused_
+;		;quit if y
+;		cmp al, 0x15
+;		jne _pause_not_y_
+;			mov byte [gameIsRunning], 0
+;			mov byte [gamePaused], 0
+;			call clrscr
+;			jmp _isr_ret_
+;		_pause_not_y_:
+;
+;		;resume if n
+;		cmp al, 0x31
+;		jne _isr_ret_
+;			;rehook timer 
+;			call hookTimerISR
+;			;resume game
+;			mov byte [gamePaused], 0
+;			jmp _isr_ret_
+;	_game_not_paused_:
 
 	;Exit screen (press y to restart, n to exit)
 	cmp byte [gameEnded], 1
