@@ -50,6 +50,8 @@ ret
 getPausedInput:
 pusha
 
+	call unhookISR
+
 	;get input 
 	mov ah, 0 
 	int 0x16
@@ -60,8 +62,7 @@ pusha
 		mov byte [gameIsRunning], 0
 		mov byte [gamePaused], 0
 		call clrscr
-		popa
-		ret
+		jmp _get_input_ret_
 	_pause_not_y_:
 
 	;resume if n
@@ -71,9 +72,9 @@ pusha
 		call hookTimerISR
 		;resume game
 		mov byte [gamePaused], 0
-		popa
-		ret
+		jmp _get_input_ret_
 _get_input_ret_:
+call hookISR
 popa
 ret
 

@@ -53,6 +53,7 @@ ret
 
 hookTimerISR:
 pusha
+push es
 
 	;store old timer isr
 	xor ax, ax
@@ -68,7 +69,7 @@ pusha
 	mov word [es:8*4], timerISR
 	mov word [es:8*4 + 2], cs
 	sti
-
+pop es
 popa
 ret
 %endif
