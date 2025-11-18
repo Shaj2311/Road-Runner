@@ -52,27 +52,35 @@ pusha
 
 	call unhookISR
 
+	_input_loop_:
+
 	;get input 
 	mov ah, 0 
 	int 0x16
 
-	;quit if y
-	cmp al, 'y'
-	jne _pause_not_y_
-		mov byte [gameIsRunning], 0
-		mov byte [gamePaused], 0
-		call clrscr
-		jmp _get_input_ret_
-	_pause_not_y_:
+		;quit if y
+		cmp al, 'y'
+		jne _pause_not_y_
+			mov byte [gameIsRunning], 0
+			mov byte [gamePaused], 0
+			call clrscr
+			jmp _get_input_ret_
+		_pause_not_y_:
 
-	;resume if n
-	cmp al, 'n'
-	jne _get_input_ret_
-		;rehook timer 
-		call hookTimerISR
-		;resume game
-		mov byte [gamePaused], 0
-		jmp _get_input_ret_
+		;resume if n
+		cmp al, 'n'
+		jne _input_loop_
+			;rehook timer 
+			call hookTimerISR
+			;resume game
+			mov byte [gamePaused], 0
+			jmp _get_input_ret_
+
+	;else, check again
+	jmp _input_loop_
+	
+
+
 _get_input_ret_:
 call hookISR
 popa
@@ -119,7 +127,7 @@ pusha
 	;	cmp byte [timerHooked], 1
 	;	jne _skip_unhooking_
 		call unhookTimerISR
-		_skip_unhooking_:
+	;	_skip_unhooking_:
 		;print pause menu
 		call clrscr
 		call printPauseMenu
@@ -160,6 +168,7 @@ _isr_ret_:
 mov ax, 0x20
 out 0x20, ax
 popa
+jmp far [cs:oldKBisr]
 iret
 
 %endif
