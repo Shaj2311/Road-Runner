@@ -168,7 +168,6 @@ _isr_ret_:
 mov ax, 0x20
 out 0x20, ax
 popa
-jmp far [cs:oldKBisr]
 iret
 
 %endif
